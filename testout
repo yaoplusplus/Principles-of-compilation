@@ -1,0 +1,63 @@
+          token         lexeme          value
+            INT            int
+             ID              f              1
+         LPAREN              (
+         RPAREN              )
+         LBRACE              {
+            INT            int
+             ID              a              2
+     SEMICOLON	              ;
+             ID              a              3
+           EXPR              =
+            NUM              0
+     SEMICOLON	              ;
+          WHILE          while
+         LPAREN              (
+             ID              a              2
+           LESS              <
+            NUM             10
+         RPAREN              )
+         LBRACE              {
+             ID              a              2
+            MUL              *
+           EXPR              =
+            NUM              2
+     SEMICOLON	              ;
+         RBRACE              }
+         RETURN         return
+             ID              a              2
+     SEMICOLON	              ;
+         RBRACE              }
+            INT            int
+           MAIN           main
+         LPAREN              (
+         RPAREN              )
+         LBRACE              {
+            INT            int
+             ID              a              2
+     SEMICOLON	              ;
+             ID              a              2
+           EXPR              =
+            NUM              0
+     SEMICOLON	              ;
+             IF             if
+         LPAREN              (
+             ID              a              2
+             EQ             ==
+            NUM              0
+         RPAREN              )
+         LBRACE              {
+            INT            int
+             ID              a              2
+     SEMICOLON	              ;
+             ID              a              2
+           EXPR              =
+             ID              a              2
+            ADD              +
+            NUM              1
+     SEMICOLON	              ;
+         RBRACE              }
+         RETURN         return
+            NUM              0
+     SEMICOLON	              ;
+         RBRACE              }
