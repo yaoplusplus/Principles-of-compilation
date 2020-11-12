@@ -7,7 +7,7 @@
             INT            int
              ID              a              2
      SEMICOLON	              ;
-             ID              a              3
+             ID              a              2
            EXPR              =
             NUM              0
      SEMICOLON	              ;

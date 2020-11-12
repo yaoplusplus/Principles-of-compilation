@@ -10,8 +10,8 @@ using namespace std;
 struct node {
     node(string data)
     {
-        no = 0;
-        this->data=data;
+        no = 0;     //值
+        this->data=data;       //yylex
         next=NULL;
     };
     node() {
@@ -29,13 +29,13 @@ struct idlist {
     idlist(int idcount){
         this->idcount=idcount;
     };
-    int idcount = 0;
+    int idcount = 0; //表项数
     node head;
     node* add(string data) {
         node* newnode = new node(data);
         if (head.next == NULL) {
             head.next = newnode;
-            head.next->no = ++idcount;
+            head.next->no = ++idcount; //序号按进入表的顺序
             return head.next;
         }
         else {
@@ -46,25 +46,25 @@ struct idlist {
             node* newnode = new node(data);
             currentnode->next = newnode;
             currentnode->next->no = ++idcount;
-            return currentnode->next;
+            return currentnode->next;       //返回末指针
         }
     }
     int search(string data) {
-        node* currentnode = &head;
-        while (currentnode->next != NULL)
+        node* currentnode = head.next;      //change node -node.next
+        //const char* c2_s2 = data.c_str();
+        while (currentnode!= NULL)
         {
-            const char* c1_s1 = currentnode->data.c_str();
-            const char* c2_s2 = data.c_str();
-            if (!strcmp(c1_s1,c2_s2))
+            //const char* c1_s1 = (currentnode->data).c_str();
+            if (data==currentnode->data)
             {
                 //匹配到id则返回id序号
-                //cout<<right<<setw(8)<<"ID"<<setw(8)<<yytext<<setw(8)<<currentnode->no;
+                
                 return currentnode->no;
             }
             currentnode = currentnode->next;
         }
           node*newnode=add(data);
-         //cout<<right<<setw(8)<<"ID"<<setw(8)<<yytext<<setw(8)<<newnode->no;
+         
           return newnode->no; 
     }
 };
