@@ -127,7 +127,27 @@ string TreeNode::sType2String(StmtType type) {
     return "?";
 }
 
-
 string TreeNode::nodeType2String (NodeType type){
-    return "<>";
+       switch(type){
+        case NODE_CONST:
+            return"const";
+            break;
+        case NODE_VAR:
+            return "variable";
+            break;
+        case NODE_EXPR:
+            return "expression";
+            break;
+        case NODE_TYPE:
+            return "type";
+            break;
+        case NODE_STMT:
+            return "statement";
+            break; 
+        case NODE_PROG:
+            return "program";
+            break;                                               
+        default:
+            break;
+    }
 }
