@@ -31,7 +31,7 @@ void TreeNode::printNodeInfo() {
         std::cout<<"lno@"<<this->lineno<<"\t@"<<this->nodeID
         <<" program";
         this->printChildrenId();
-
+            break;
         case NODE_CONST:
         std::cout<<"lno@"<<this->lineno<<"\t@"<<this->nodeID
         <<" const type: "<<this->type->type;
@@ -73,7 +73,7 @@ void TreeNode::printChildrenId() {
     else{
         std::cout<<" children: [";
         std::cout<<this->child->nodeID<<" ";
-        if(this->child->sibling=nullptr)
+        if(this->child->sibling==nullptr)
         return;
         //sibling
         else{
@@ -148,6 +148,7 @@ string TreeNode::nodeType2String (NodeType type){
             return "program";
             break;                                               
         default:
+        return"<>";
             break;
     }
 }
