@@ -1,3 +1,6 @@
-int a = 0;
-int b = 1;
-int c = 1;
+int aTT = 45;
+int b0 = 45;
+int c = 8;
+char d = 'm';
+bool flag=1;
+string str = "sasa";

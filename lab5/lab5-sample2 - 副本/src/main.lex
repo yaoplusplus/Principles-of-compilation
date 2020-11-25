@@ -9,11 +9,10 @@ LINECOMMENT \/\/[^\n]*
 EOL	(\r\n|\r|\n)
 WHILTESPACE [[:blank:]]
 
-INTEGER [0-9]+
-
+INTEGER [1-9]+
 CHAR \'.?\'
 STRING \".+\"
-
+BOOL [0|1]
 IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 %%
 
@@ -24,6 +23,7 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "int" return T_INT;
 "bool" return T_BOOL;
 "char" return T_CHAR;
+"string" return T_STRING;
 
 "=" return LOP_ASSIGN;
 
@@ -32,7 +32,9 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 {INTEGER} {
     TreeNode* node = new TreeNode(lineno, NODE_CONST);
     node->type = TYPE_INT;
-    node->int_val = atoi(yytext);
+    //change1
+    const char*val=yytext;
+    node->int_val = atoi(val);
     yylval = node;
     return INTEGER;
 }
@@ -40,11 +42,26 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 {CHAR} {
     TreeNode* node = new TreeNode(lineno, NODE_CONST);
     node->type = TYPE_CHAR;
-    node->int_val = yytext[1];
+    node->ch_val = yytext[1]; 
     yylval = node;
     return CHAR;
 }
-
+{STRING} {
+    TreeNode* node = new TreeNode(lineno, NODE_CONST);
+    node->type = TYPE_STRING;
+    const char*val=yytext;
+    node->str_val=val;
+    yylval = node;
+    return STRING;
+}
+{BOOL} {
+    TreeNode* node = new TreeNode(lineno, NODE_CONST);
+    node->type = TYPE_BOOL;
+    const char*val=yytext;
+    node->b_val=bool(atoi(val));
+    yylval = node;
+    return BOOL;
+}
 {IDENTIFIER} {
     TreeNode* node = new TreeNode(lineno, NODE_VAR);
     node->var_name = string(yytext);

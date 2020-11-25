@@ -42,9 +42,30 @@ void TreeNode::printNodeInfo() {
         cout << endl;
         break;
     case NODE_CONST:
-        std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
-            << " const type: " << this->type->type;
-        cout << endl;
+    std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
+            << " const type: ";
+        switch(this->type->type){
+
+        case VALUE_STRING:
+        cout<<this->str_val<<endl;
+            break;
+
+        case VALUE_INT:
+        cout<<this->int_val<<endl;
+            break;
+
+        case VALUE_CHAR:
+        cout<<this->ch_val<<endl;
+            break;
+        
+        case VALUE_BOOL:
+        cout<<this->b_val<<endl;
+            break;
+
+        default:
+            break;
+        }
+        
         break;
 
     case NODE_VAR:
@@ -65,7 +86,7 @@ void TreeNode::printNodeInfo() {
             << " " << "statement";
         this->printChildrenId();
         //print statement type
-        // std::cout << " stmt:" << this->type->type;
+        std::cout << " stmt:" << this->sType2String(this->stype);
         cout << endl;
         break;
 
@@ -107,12 +128,8 @@ void TreeNode::printAST() {// father first
     if (this == nullptr)
         return;
     this->printNodeInfo();
-    if (this->child == nullptr)
-        return;
     this->child->printAST();
-    if (this->child->sibling == nullptr)
-        return;
-    this->child->sibling->printAST();
+    this->sibling->printAST();
 }
 
 // You can output more info...
