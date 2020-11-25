@@ -29,3 +29,5 @@ clean:
 	rm result.txt
 test: 
 	./bin/main tests/test.c > result.txt
+test1:
+	./bin/main tests/test1.c > result1.txt
