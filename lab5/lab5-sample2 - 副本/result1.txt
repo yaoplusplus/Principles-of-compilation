@@ -1,8 +1,0 @@
-syntax error at line 3
-lno@0	@9 program children: [3 7  ]
-lno@1	@3 statement children: [0 1 2  ]
-lno@1	@0 type type:int
-lno@1	@1 variable varname: a
-lno@2	@7 statement children: [4 5 6  ]
-lno@2	@4 type type:int
-lno@2	@5 variable varname: b

@@ -1,5 +1,5 @@
 CC := g++
-CFLAGS := -Wall -Wextra -std=c++11 # without debug
+CFLAGS := -w -Wextra -std=c++11 # without debug //-Wall 显示所有警告 not uesed , ==null
 TARGET := ./bin/main
 
 all: run

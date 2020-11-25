@@ -173,14 +173,3 @@ string TreeNode::nodeType2String(NodeType type) {
     }
 }
 
-// int main() {
-//     TreeNode* fa = new TreeNode(0,NODE_PROG);
-//     TreeNode* child= new TreeNode(1, NODE_STMT);
-//     TreeNode* sib1 = new TreeNode(2, NODE_STMT);
-//     TreeNode* sib2 = new TreeNode(3, NODE_STMT);
-//     fa->addChild(child);
-//     fa->addChild(sib1);
-//     fa->printNodeInfo();
-//     fa->printAST();
-//     return 0;
-// }
