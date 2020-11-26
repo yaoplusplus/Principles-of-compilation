@@ -25,8 +25,12 @@ IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 "char" return T_CHAR;
 "string" return T_STRING;
 
+"==" return LOP_EQ;
 "=" return LOP_ASSIGN;
-
+"+" return ADD;
+"-" return MINUS;
+"*" return MUL;
+"/" return DIV;
 ";" return  SEMICOLON;
 
 {INTEGER} {

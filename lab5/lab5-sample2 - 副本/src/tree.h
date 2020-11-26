@@ -16,17 +16,19 @@ enum NodeType
 
 enum OperatorType
 {
-    OP_EQ,      // ==
-    OP_PLUS,    // +
-    OP_MINUS,   //-
-    OP_MULTI,   // \*
+    OP_EQ,     // ==
+    OP_ADD,    // +
+    OP_MINUS,  // -
+    OP_MUL,    // \*
+    OP_DIV,    // \/
 };
 
 enum StmtType {
     STMT_SKIP,// 空语句
-    STMT_DECL,
-    STMT_IF,
-    STMT_LOOP,
+    STMT_DECL,//声明语句
+    STMT_IF, 
+    STMT_LOOP,//循环语句
+    STMT_ASSIGN,
 }
 ;
 
