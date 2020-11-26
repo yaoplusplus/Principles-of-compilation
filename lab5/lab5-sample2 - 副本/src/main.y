@@ -3,7 +3,7 @@
     #define YYSTYPE TreeNode *  //此处定义了$$的类型
     TreeNode* root;
     extern int lineno;
-    // extern vector<layer> layers;        //作用域
+    extern vector<layer> layers;        //作用域
     // extern vector<variable> curlayer;   //当前作用域
     int yylex();
     int yyerror( char const * );
