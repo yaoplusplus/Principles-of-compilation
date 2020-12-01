@@ -99,9 +99,18 @@ RBRACE \}
         curlayer->vars.push_back(new variable());
         curlayer->vars[0]->var_name = node->var_name;
     }
-    else{//加入检查
-        curlayer->vars.push_back(new variable());
-        curlayer->vars.back()->var_name = node->var_name;
+    else{
+        int size = curlayer->vars.size();
+        int preflag = 0;
+        for(int i=0; i<size; i++){
+            if(curlayer->vars[i]->var_name == node->var_name){
+                preflag = 1;
+            }
+        }
+        if(preflag!=1){
+            curlayer->vars.push_back(new variable());
+            curlayer->vars.back()->var_name = node->var_name;
+        }
     }
     return IDENTIFIER;
 }
