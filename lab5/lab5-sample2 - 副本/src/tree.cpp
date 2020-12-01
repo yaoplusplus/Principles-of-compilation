@@ -25,13 +25,11 @@ TreeNode::TreeNode(int lineno, NodeType type) {
     this->lineno = lineno;
     this->nodeType = type;
     this->nodeID = nodecount++; //先不管
-    this->layerflag = 0;
     this->layerindex = 0; //先不管
 }
 TreeNode::TreeNode() {
     this->lineno = lineno;
     this->nodeID = nodecount++;
-    this->layerflag = 0;
     this->layerindex = 0;
 }
 

@@ -65,7 +65,6 @@ public:
     string str_val;
     string var_name;        //NODE_VAR
     int layerindex;         //当前变量节点的次序
-    int layerflag = 0;      //作为节点未初始化标志
 public:
     static string nodeType2String (NodeType type);
     static string opType2String (OperatorType type);

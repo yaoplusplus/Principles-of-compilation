@@ -1,11 +1,11 @@
-int a = 1;
-int b = 4;
+int aTT = 45;
+int b0 = 45;
 int c = 8;
-c = a + b;
-c=a-b;
-c=a*b;
-c=a/b;
+char d = 'm';
+bool flag=1;
+string str = "sasa";
 
-
+d = 'n';
+str = "new value";
 
 

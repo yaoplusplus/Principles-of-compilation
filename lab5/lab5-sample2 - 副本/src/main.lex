@@ -92,30 +92,7 @@ RBRACE \}
     TreeNode* node = new TreeNode(lineno, NODE_VAR);
     node->var_name = string(yytext);
     yylval = node;
-    static int addcount = 0;
-
-    if(layers[layernum] == nullptr)
-    {
-        layers[layernum] = node;
-        cout<<"addcount: "<<++addcount<<" layernum: "<<layernum<<" add successfully "<<layers[layernum]->var_name<<endl;
-    }
-    else{
-        TreeNode*curlayer=layers[layernum];
-        while(curlayer->sibling!= nullptr){ //不是没初始化的
-            if(curlayer->var_name == string(yytext)){
-                cout<<"this add is over"<<endl;
-                return IDENTIFIER;
-            }
-            curlayer = curlayer->sibling;
-        }
-        if(curlayer->var_name != node->var_name){
-            curlayer->sibling= node;
-            cout<<"addcount: "<<++addcount<<" layernum: "<<layernum<<" add successfully "<<curlayer->sibling->var_name<<endl;
-            
-        }
-    }
     return IDENTIFIER;
-    
 }
 
 {WHILTESPACE} /* do nothing */

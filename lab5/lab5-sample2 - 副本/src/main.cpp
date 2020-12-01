@@ -40,10 +40,10 @@ int main(int argc, char *argv[])
     //         }
     //     }
     // }
-     cout<<"layernum: "<<0<<" var_name: "<<layers[0]->var_name<<endl;
+    // cout<<"layernum: "<<0<<" var_name: "<<layers[0]->var_name<<endl;
     // cout<<"layernum: "<<0<<" var_name: "<<layers[0]->sibling->var_name<<endl;
     // cout<<"layernum: "<<0<<" var_name: "<<layers[0]->sibling->sibling->var_name<<endl;
-     cout<<"layernum: "<<1<<" var_name: "<<layers[1]->var_name<<endl;
+    // cout<<"layernum: "<<1<<" var_name: "<<layers[1]->var_name<<endl;
     // cout<<"layernum: "<<1<<" var_name: "<<layers[1]->sibling->var_name<<endl;
     // cout<<"layernum: "<<1<<" var_name: "<<layers[1]->sibling->sibling->var_name<<endl;
     
