@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
     cout<<"the num of the layers: "<<layers.size()<<endl;
     for(int i=0;i<layers.size();i++){
-        cout<<"addr: "<<layers[i];
+        cout<<"layernum: "<<i<<" addr: "<<layers[i];
         if(layers[i]->vars.size()!=0)
         cout<<" vars: ";
             for(int j=0;j<layers[i]->vars.size();j++){

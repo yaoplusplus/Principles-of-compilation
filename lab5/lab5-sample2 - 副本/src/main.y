@@ -6,6 +6,7 @@
     int yylex();
     int yyerror( char const * );
     extern int layernum;
+    int defineflag = 0;
 %}
 %token IF ELSE WHILE PRINTF SCANF
 %token T_CHAR T_INT T_STRING T_BOOL 
@@ -41,14 +42,17 @@ declaration
 : T IDENTIFIER LOP_ASSIGN expr{  // declare and init
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_DECL;
+        defineflag = 1;
         node->addChild($1);
         node->addChild($2);
         node->addChild($4);
+        
         $$ = node;   
 } 
 | T IDENTIFIER {                // declare
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_DECL;
+        defineflag = 1;
         node->addChild($1);
         node->addChild($2);
         $$ = node;   

@@ -4,6 +4,7 @@
 #include "main.tab.h"  // yacc header
 #include "tree.h"
 
+extern int defineflag;
 vector<layer*> layers(1,new layer()); //layer array
 int layernum = 0;
 int lineno=1;
@@ -110,6 +111,9 @@ RBRACE \}
         if(preflag!=1){
             curlayer->vars.push_back(new variable());
             curlayer->vars.back()->var_name = node->var_name;
+        }
+        else{
+            cout<<"redefine!"<<endl;
         }
     }
     return IDENTIFIER;
