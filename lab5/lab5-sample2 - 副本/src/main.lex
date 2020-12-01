@@ -90,17 +90,20 @@ BOOL [true | false]
     yylval = node;
     return STRING;
 }
-{true} {
-    TreeNode* node = new TreeNode(lineno, NODE_CONST);
+"true" {
+    TreeNode *node = new TreeNode(lineno,NODE_BOOL);
     node->type = TYPE_BOOL;
-    node->b_val=val;
+    node->b_val = true;
     yylval = node;
-    return STRING;
+    return TRUE;
 }
-{false} {
-    
+"false" {
+    TreeNode *node = new TreeNode(lineno,NODE_BOOL);
+    node->type = TYPE_BOOL;
+    node->b_val = false;
+    yylval = node;
+    return FALSE;
 }
-
 {IDENTIFIER} {//需要另起炉灶
     TreeNode* node = new TreeNode(lineno, NODE_VAR);
     node->var_name = string(yytext);

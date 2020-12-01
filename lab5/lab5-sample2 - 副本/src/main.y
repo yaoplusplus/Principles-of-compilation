@@ -8,7 +8,7 @@
     extern int layernum;
     vector<layer*> layers(1,new layer()); //layer array
 %}
-%token IF ELSE WHILE PRINTF SCANF
+%token IF ELSE WHILE PRINTF SCANF TRUE FALSE
 %token T_CHAR T_INT T_STRING T_BOOL 
 %token IDENTIFIER INTEGER CHAR BOOL STRING
 
@@ -151,6 +151,12 @@ expr
         $$ = $1;
 }
 |   STRING {
+        $$ = $1;
+}
+|   FALSE {
+        $$ = $1;
+}
+|   TRUE {
         $$ = $1;
 }
 |   expr ADD expr{
