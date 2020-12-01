@@ -12,7 +12,6 @@ enum NodeType
     NODE_TYPE, //节点的类型是类型
     NODE_STMT,
     NODE_PROG,
-    NODE_LAYER
 };
 
 enum OperatorType
@@ -64,7 +63,6 @@ public:
     bool b_val;
     string str_val;
     string var_name;        //NODE_VAR
-    int layerindex;         //当前变量节点的次序
 public:
     static string nodeType2String (NodeType type);
     static string opType2String (OperatorType type);

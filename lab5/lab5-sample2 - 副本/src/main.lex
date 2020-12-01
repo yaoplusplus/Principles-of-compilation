@@ -3,7 +3,8 @@
 #include "common.h"
 #include "main.tab.h"  // yacc header
 #include "tree.h"
-vector<TreeNode*> layers(1,new TreeNode());
+
+vector<layer*> layers(1,new layer()); //layer array
 int layernum = 0;
 int lineno=1;
 %}
@@ -50,7 +51,8 @@ RBRACE \}
 ")" return RPAREN;
 
 {LBRACE} {
-    layers.push_back(new TreeNode());
+    //每次遇到一个层级加一 就初始化一个层级
+    layers.push_back(new layer());
     layernum++;
     cout<<setw(5)<<left<<"in"<<"{, layernum++, layernum = "<<layernum<<endl;
     return LBRACE;
@@ -92,12 +94,15 @@ RBRACE \}
     TreeNode* node = new TreeNode(lineno, NODE_VAR);
     node->var_name = string(yytext);
     yylval = node;
-    TreeNode*curlayer = layers[layernum];
-    while(curlayer->sibling!=nullptr){
-        curlayer = curlayer->sibling;
+    layer* curlayer = layers[layernum];
+    if(curlayer->vars.size()==0){//先仅仅加入变量名字
+        curlayer->vars.push_back(new variable());
+        curlayer->vars[0]->var_name = node->var_name;
     }
-    curlayer->sibling = node;
-    curlayer->sibling->sibling = nullptr;
+    else{//加入检查
+        curlayer->vars.push_back(new variable());
+        curlayer->vars.back()->var_name = node->var_name;
+    }
     return IDENTIFIER;
 }
 
