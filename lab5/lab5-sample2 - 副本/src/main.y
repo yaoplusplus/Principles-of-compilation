@@ -130,14 +130,36 @@ declaration
 ;
 
 assign 
-:   IDENTIFIER LOP_ASSIGN expr {
+:   IDENTIFIER LOP_ASSIGN expr {//update the IDTABLE
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_ASSIGN;
         node->addChild($1);
         node->addChild($3);
+        //搜索ID时候在当前层符号表中
+        layer* curlayer = layers[layernum];
+        int size = curlayer->vars.size();
+        //遍历当前层变量
+        for(int i=0; i<size; i++){
+                if(curlayer->vars[i]->var_name == $1->var_name){
+                                if(curlayer->vars[i]->type->type == VALUE_INT){
+                                curlayer->vars[i]->int_val = $3->int_val;
+                                }
+                                else if(curlayer->vars[i]->type->type == VALUE_CHAR){
+                                curlayer->vars[i]->ch_val = $3->ch_val;
+                                }
+                                else if(curlayer->vars[i]->type->type == VALUE_STRING){
+                                curlayer->vars[i]->str_val = $3->str_val;
+                                }
+                                else if(curlayer->vars[i]->type->type == VALUE_BOOL){
+                                curlayer->vars[i]->b_val = $3->b_val;
+                                }
+                        }
 
+
+                        }
         $$ = node;
 }
+        
 ;
 
 expr
