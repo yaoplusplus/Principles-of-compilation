@@ -3,24 +3,25 @@
     #define YYSTYPE TreeNode *  //此处定义了$$的类型
     TreeNode* root;
     extern int lineno;
-    extern vector<layer> layers;        //作用域
+    // extern vector<layer> layers;        //作用域
     // extern vector<variable> curlayer;   //当前作用域
     int yylex();
     int yyerror( char const * );
     
 %}
-
+%token IF ELSE WHILE PRINTF SCANF
 %token T_CHAR T_INT T_STRING T_BOOL 
 %token IDENTIFIER INTEGER CHAR BOOL STRING
-%token LOP_ASSIGN 
 
-%token SEMICOLON
+
+%token SEMICOLON LBRACE RBRACE LPAREN RPAREN
+%token LOP_ASSIGN 
 %token ADD MINUS MUL DIV //MOD SELFADD SELFMIN NEG
 
 %left LOP_EQ //==
-%left ADD MINUS
+%left ADD MINUS 
 %left MUL DIV
-
+%right NOT
 
 %%
 

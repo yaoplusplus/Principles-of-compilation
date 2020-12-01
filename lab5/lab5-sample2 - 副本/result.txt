@@ -1,0 +1,55 @@
+addcount: 1 layernum: 0 add successfully a
+addcount: 2 layernum: 0 add successfully b
+addcount: 3 layernum: 0 add successfully c
+this add is over
+this add is over
+this add is over
+this add is over
+this add is over
+this add is over
+this add is over
+this add is over
+this add is over
+this add is over
+this add is over
+this add is over
+lno@0	@32 program children: [3 7 11 16 21 26 31  ]
+lno@1	@3 statement children: [0 1 2 5 6 9 10  ] stmt:decl
+lno@1	@0 type type:int
+lno@1	@1 variable varname: a
+lno@1	@2 const type: 1
+lno@2	@5 variable varname: b
+lno@2	@6 const type: 4
+lno@3	@9 variable varname: c
+lno@3	@10 const type: 8
+lno@2	@7 statement children: [4 5 6 9 10  ] stmt:decl
+lno@2	@4 type type:int
+lno@2	@5 variable varname: b
+lno@2	@6 const type: 4
+lno@3	@9 variable varname: c
+lno@3	@10 const type: 8
+lno@3	@11 statement children: [8 9 10  ] stmt:decl
+lno@3	@8 type type:int
+lno@3	@9 variable varname: c
+lno@3	@10 const type: 8
+lno@4	@16 statement children: [12 15  ] stmt:assign
+lno@4	@12 variable varname: c
+lno@4	@15 expression children: [13 14  ]
+lno@4	@13 variable varname: a
+lno@4	@14 variable varname: b
+lno@5	@21 statement children: [17 20  ] stmt:assign
+lno@5	@17 variable varname: c
+lno@5	@20 expression children: [18 19  ]
+lno@5	@18 variable varname: a
+lno@5	@19 variable varname: b
+lno@6	@26 statement children: [22 25  ] stmt:assign
+lno@6	@22 variable varname: c
+lno@6	@25 expression children: [23 24  ]
+lno@6	@23 variable varname: a
+lno@6	@24 variable varname: b
+lno@7	@31 statement children: [27 30  ] stmt:assign
+lno@7	@27 variable varname: c
+lno@7	@30 expression children: [28 29  ]
+lno@7	@28 variable varname: a
+lno@7	@29 variable varname: b
+layernum: 0 var_name: a

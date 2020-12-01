@@ -13,7 +13,7 @@
 #include <string>
 #include <list>
 #include <assert.h>
-
+#include<vector>
 #include <map>
 #include <stack>
 #include <unordered_map>
