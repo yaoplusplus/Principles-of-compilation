@@ -39,7 +39,7 @@ statement
 ;
 
 declaration
-: T IDENTIFIER LOP_ASSIGN expr{  // declare and init
+: T IDENTIFIER LOP_ASSIGN expr{// declare and init
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_DECL;
         node->addChild($1);
@@ -63,6 +63,9 @@ declaration
         else if($1->type->type == VALUE_STRING){
                 curlayer->vars[0]->str_val = $4->str_val;
                 }
+        else if($1->type->type == VALUE_BOOL){
+                curlayer->vars[0]->b_val = $4->b_val;
+                }      
         }
     else{
         int size = curlayer->vars.size();
@@ -88,32 +91,39 @@ declaration
         else if($1->type->type == VALUE_STRING){
                 curlayer->vars.back()->str_val = $4->str_val;
                 }
+        else if($1->type->type == VALUE_BOOL){
+                cout<<"it's bool"<<endl;
+                curlayer->vars.back()->b_val = $4->b_val;
+                }
         }
     }
         $$ = node;   
 } 
-| T IDENTIFIER {                // declare
+| T IDENTIFIER {// declare
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_DECL;
         node->addChild($1);
         node->addChild($2);
+
         layer* curlayer = layers[layernum];
-    if(curlayer->vars.size()==0){//先仅仅加入变量名字
+        if(curlayer->vars.size()==0){
         curlayer->vars.push_back(new variable());
-        curlayer->vars[0]->var_name = node->var_name;
-    }
-    else{
-        int size = curlayer->vars.size();
-        int preflag = 0;
-        for(int i=0; i<size; i++){
-            if(curlayer->vars[i]->var_name == node->var_name){
-                preflag = 1;
-            }
+        curlayer->vars[0]->var_name = $2->var_name;
+        curlayer->vars[0]->type = $1->type;
         }
-        if(preflag!=1){
-            curlayer->vars.push_back(new variable());
-            curlayer->vars.back()->var_name = node->var_name;
-        }
+         else{
+                int size = curlayer->vars.size();
+                int preflag = 0;
+                for(int i=0; i<size; i++){
+                        if(curlayer->vars[i]->var_name == $2->var_name){
+                        preflag = 1;
+                        }
+                }
+                if(preflag!=1){
+                curlayer->vars.push_back(new variable());
+                curlayer->vars.back()->var_name = $2->var_name;
+                curlayer->vars.back()->type = $1->type;
+                }
     }
         $$ = node;   
 }
@@ -125,6 +135,7 @@ assign
         node->stype = STMT_ASSIGN;
         node->addChild($1);
         node->addChild($3);
+
         $$ = node;
 }
 ;

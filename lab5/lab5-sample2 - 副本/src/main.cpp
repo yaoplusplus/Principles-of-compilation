@@ -44,6 +44,9 @@ int main(int argc, char *argv[])
                 else if(layers[i]->vars[j]->type->type == VALUE_STRING){
                     cout<<" type: string value: "<<layers[i]->vars[j]->str_val;
                 }
+                else if(layers[i]->vars[j]->type->type == VALUE_BOOL){
+                    cout<<" type: bool value: "<<layers[i]->vars[j]->b_val;
+                }
                 cout<<endl;
             }
         cout<<endl;

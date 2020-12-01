@@ -20,6 +20,7 @@ STRING \".+\"
 IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 LBRACE \{
 RBRACE \}
+BOOL [true | false]
 
 %%
 
@@ -88,6 +89,16 @@ RBRACE \}
     node->str_val=val;
     yylval = node;
     return STRING;
+}
+{true} {
+    TreeNode* node = new TreeNode(lineno, NODE_CONST);
+    node->type = TYPE_BOOL;
+    node->b_val=val;
+    yylval = node;
+    return STRING;
+}
+{false} {
+    
 }
 
 {IDENTIFIER} {//需要另起炉灶

@@ -7,7 +7,7 @@ int b0 = 45;
 }
 char d = 'm';
 string str = "sasa";
-
+bool bbb = 1; 
 d = 'n';
 str = "new value";
 //此处的两个str显然不是重定义,所以添加操作还是要放在main.y

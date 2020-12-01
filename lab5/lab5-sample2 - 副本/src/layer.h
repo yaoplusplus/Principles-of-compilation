@@ -4,7 +4,8 @@ struct variable{
     Type* type; 
     int int_val;
     char ch_val;
-    bool bool_val;
+    bool b_val;
+
     string str_val;
 
     string var_name;
