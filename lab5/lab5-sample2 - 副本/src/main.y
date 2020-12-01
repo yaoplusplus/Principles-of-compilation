@@ -3,16 +3,13 @@
     #define YYSTYPE TreeNode *  //此处定义了$$的类型
     TreeNode* root;
     extern int lineno;
-    // extern vector<layer> layers;        //作用域
-    // extern vector<variable> curlayer;   //当前作用域
     int yylex();
     int yyerror( char const * );
-    
+    extern int layernum;
 %}
 %token IF ELSE WHILE PRINTF SCANF
 %token T_CHAR T_INT T_STRING T_BOOL 
 %token IDENTIFIER INTEGER CHAR BOOL STRING
-
 
 %token SEMICOLON LBRACE RBRACE LPAREN RPAREN
 %token LOP_ASSIGN 
@@ -37,6 +34,7 @@ statement
 :   SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}//分号-STMT_SKIP
 |   declaration SEMICOLON {$$ = $1;}
 |   assign SEMICOLON {$$ = $1;}
+|   LBRACE statements RBRACE {$$ = $2;}
 ;
 
 declaration

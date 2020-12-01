@@ -84,7 +84,7 @@ void TreeNode::printNodeInfo() {
         std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
             << " expression";
         this->printChildrenId();
-        cout << endl;
+        cout<<" expr:"<<this->opType2String(this->optype)<<endl;
         break;
 
     case NODE_STMT:
@@ -197,7 +197,26 @@ string TreeNode::nodeType2String(NodeType type) {
         return "program";
         break;
     default:
-        return"<>";
+        return"block";
+        break;
+    }
+}
+string TreeNode::opType2String(OperatorType type) {
+    switch (type) {
+    case OP_ADD:
+        return"add";
+        break;
+    case OP_MINUS:
+        return "minus";
+        break;
+    case OP_MUL:
+        return "mul";
+        break;
+    case OP_DIV:
+        return "div";
+        break;
+    default:
+        return"?";
         break;
     }
 }

@@ -3,9 +3,8 @@
 #include "common.h"
 #include "main.tab.h"  // yacc header
 #include "tree.h"
-
+vector<TreeNode*> layers(1,new TreeNode());
 int layernum = 0;
-vector<TreeNode*> layers(20,nullptr); //每一层都初始化为空指针
 int lineno=1;
 %}
 
@@ -20,6 +19,7 @@ STRING \".+\"
 IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 LBRACE \{
 RBRACE \}
+
 %%
 
 {BLOCKCOMMENT}  /* do nothing */
@@ -50,15 +50,15 @@ RBRACE \}
 ")" return RPAREN;
 
 {LBRACE} {
+    layers.push_back(new TreeNode());
     layernum++;
-    cout<<"in {, layernum++, layernum = "<<layernum<<endl;
+    cout<<setw(5)<<left<<"in"<<"{, layernum++, layernum = "<<layernum<<endl;
     return LBRACE;
 }
 
 {RBRACE} {
     layernum--;
-    cout<<endl<<"} is in"<<endl;        //右大括号没有进来
-    cout<<"out {,layernum--, layernum = "<<layernum<<endl;
+    cout<<setw(5)<<left<<"out"<<"{,layernum--, layernum = "<<layernum<<endl;
     return RBRACE;
 }
 
@@ -88,10 +88,16 @@ RBRACE \}
     return STRING;
 }
 
-{IDENTIFIER} {//ID保存在layers里,语法树只是指向它.
+{IDENTIFIER} {//需要另起炉灶
     TreeNode* node = new TreeNode(lineno, NODE_VAR);
     node->var_name = string(yytext);
     yylval = node;
+    TreeNode*curlayer = layers[layernum];
+    while(curlayer->sibling!=nullptr){
+        curlayer = curlayer->sibling;
+    }
+    curlayer->sibling = node;
+    curlayer->sibling->sibling = nullptr;
     return IDENTIFIER;
 }
 
