@@ -1,20 +1,14 @@
 #include "common.h"
-enum var_type{
-    var_int,
-    var_char,
-    var_bool,
-    var_string
-};
 struct variable{
     public:
-    var_type type;
-    int int_value;
-    char char_value;
-    bool bool_value;
-    string str_value;
+    Type* type; 
+    int int_val;
+    char ch_val;
+    bool bool_val;
+    string str_val;
 
     string var_name;
-    variable(var_type type,string var_name){
+    variable(Type* type,string var_name){
         this->type = type;
         this->var_name = var_name;
     };

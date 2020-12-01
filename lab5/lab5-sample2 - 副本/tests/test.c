@@ -6,7 +6,6 @@ int b0 = 45;
     string str ="re";
 }
 char d = 'm';
-bool flag=1;
 string str = "sasa";
 
 d = 'n';

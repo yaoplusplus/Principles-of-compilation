@@ -32,9 +32,19 @@ int main(int argc, char *argv[])
     for(int i=0;i<layers.size();i++){
         cout<<"layernum: "<<i<<" addr: "<<layers[i];
         if(layers[i]->vars.size()!=0)
-        cout<<" vars: ";
+        cout<<endl;
             for(int j=0;j<layers[i]->vars.size();j++){
-                cout<<layers[i]->vars[j]->var_name<<" ";
+                cout<<" var: "<<layers[i]->vars[j]->var_name;
+                if(layers[i]->vars[j]->type->type == VALUE_INT){
+                    cout<<" type: int value: "<<layers[i]->vars[j]->int_val;
+                }
+                else if(layers[i]->vars[j]->type->type == VALUE_CHAR){
+                    cout<<" type: char value: "<<layers[i]->vars[j]->ch_val;
+                }
+                else if(layers[i]->vars[j]->type->type == VALUE_STRING){
+                    cout<<" type: string value: "<<layers[i]->vars[j]->str_val;
+                }
+                cout<<endl;
             }
         cout<<endl;
     }

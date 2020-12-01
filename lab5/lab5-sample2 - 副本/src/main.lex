@@ -4,8 +4,7 @@
 #include "main.tab.h"  // yacc header
 #include "tree.h"
 
-extern int defineflag;
-vector<layer*> layers(1,new layer()); //layer array
+extern vector<layer*> layers;
 int layernum = 0;
 int lineno=1;
 %}
@@ -95,27 +94,6 @@ RBRACE \}
     TreeNode* node = new TreeNode(lineno, NODE_VAR);
     node->var_name = string(yytext);
     yylval = node;
-    layer* curlayer = layers[layernum];
-    if(curlayer->vars.size()==0){//先仅仅加入变量名字
-        curlayer->vars.push_back(new variable());
-        curlayer->vars[0]->var_name = node->var_name;
-    }
-    else{
-        int size = curlayer->vars.size();
-        int preflag = 0;
-        for(int i=0; i<size; i++){
-            if(curlayer->vars[i]->var_name == node->var_name){
-                preflag = 1;
-            }
-        }
-        if(preflag!=1){
-            curlayer->vars.push_back(new variable());
-            curlayer->vars.back()->var_name = node->var_name;
-        }
-        else{
-            cout<<"redefine!"<<endl;
-        }
-    }
     return IDENTIFIER;
 }
 

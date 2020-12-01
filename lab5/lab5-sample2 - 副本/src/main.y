@@ -6,7 +6,7 @@
     int yylex();
     int yyerror( char const * );
     extern int layernum;
-    int defineflag = 0;
+    vector<layer*> layers(1,new layer()); //layer array
 %}
 %token IF ELSE WHILE PRINTF SCANF
 %token T_CHAR T_INT T_STRING T_BOOL 
@@ -42,19 +42,79 @@ declaration
 : T IDENTIFIER LOP_ASSIGN expr{  // declare and init
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_DECL;
-        defineflag = 1;
         node->addChild($1);
         node->addChild($2);
         node->addChild($4);
-        
+        layer* curlayer = layers[layernum];
+        if(curlayer->vars.size()==0){
+                cout<<"initial the curlayer!"<<endl;
+        curlayer->vars.push_back(new variable());
+        curlayer->vars[0]->var_name = $2->var_name;
+        curlayer->vars[0]->type = $1->type;
+        // cout<< $1->type->type <<endl; $1->type->type = 1 (VALUE_INT)
+        if($1->type->type == VALUE_INT){
+                //cout<<"it's int"<<endl;
+                curlayer->vars[0]->int_val = $4->int_val;
+                //cout<< curlayer->vars[0]->int_val<<endl;
+                }
+        else if($1->type->type == VALUE_CHAR){
+                curlayer->vars[0]->ch_val = $4->ch_val;
+                }
+        else if($1->type->type == VALUE_STRING){
+                curlayer->vars[0]->str_val = $4->str_val;
+                }
+        }
+    else{
+        int size = curlayer->vars.size();
+        int preflag = 0;
+        for(int i=0; i<size; i++){
+            if(curlayer->vars[i]->var_name == $2->var_name){
+                preflag = 1;
+            }
+        }
+        if(preflag!=1){
+                cout<<"the id is not the same"<<endl;
+            curlayer->vars.push_back(new variable());
+            curlayer->vars.back()->var_name = $2->var_name;
+            curlayer->vars.back()->type = $1->type;
+            if($1->type->type == VALUE_INT){
+                //cout<<"it's int"<<endl;
+                curlayer->vars.back()->int_val = $4->int_val;
+                //cout<< curlayer->vars.back()->int_val<<endl;
+                }
+        else if($1->type->type == VALUE_CHAR){
+                curlayer->vars.back()->ch_val = $4->ch_val;
+                }
+        else if($1->type->type == VALUE_STRING){
+                curlayer->vars.back()->str_val = $4->str_val;
+                }
+        }
+    }
         $$ = node;   
 } 
 | T IDENTIFIER {                // declare
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_DECL;
-        defineflag = 1;
         node->addChild($1);
         node->addChild($2);
+        layer* curlayer = layers[layernum];
+    if(curlayer->vars.size()==0){//先仅仅加入变量名字
+        curlayer->vars.push_back(new variable());
+        curlayer->vars[0]->var_name = node->var_name;
+    }
+    else{
+        int size = curlayer->vars.size();
+        int preflag = 0;
+        for(int i=0; i<size; i++){
+            if(curlayer->vars[i]->var_name == node->var_name){
+                preflag = 1;
+            }
+        }
+        if(preflag!=1){
+            curlayer->vars.push_back(new variable());
+            curlayer->vars.back()->var_name = node->var_name;
+        }
+    }
         $$ = node;   
 }
 ;
