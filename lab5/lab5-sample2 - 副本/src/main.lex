@@ -39,6 +39,7 @@ BOOL [true | false]
 "printf" return PRINTF;
 "scanf" return SCANF;
 
+"++"
 "==" return LOP_EQ;
 "=" return LOP_ASSIGN;
 "+" return ADD;
@@ -46,6 +47,7 @@ BOOL [true | false]
 "*" return MUL;
 "/" return DIV;
 "!" return NOT;
+"%" return MOD;
 
 ";" return  SEMICOLON;
 "(" return LPAREN;
@@ -55,13 +57,13 @@ BOOL [true | false]
     //每次遇到一个层级加一 就初始化一个层级
     layers.push_back(new layer());
     layernum++;
-    cout<<setw(5)<<left<<"in"<<"{, layernum++, layernum = "<<layernum<<endl;
+    // cout<<setw(5)<<left<<"in"<<"{, layernum++, layernum = "<<layernum<<endl;
     return LBRACE;
 }
 
 {RBRACE} {
     layernum--;
-    cout<<setw(5)<<left<<"out"<<"{,layernum--, layernum = "<<layernum<<endl;
+    //cout<<setw(5)<<left<<"out"<<"{,layernum--, layernum = "<<layernum<<endl;
     return RBRACE;
 }
 

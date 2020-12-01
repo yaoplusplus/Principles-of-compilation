@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
     }
     cout<<"---------------------------------------------------"<<endl;
 
-    cout<<"the num of the layers: "<<layers.size()<<endl;
-    for(int i=0;i<layers.size();i++){
+    // cout<<"the num of the layers: "<<layers.size()<<endl;
+    for(int i=0;i<layers.size() &&layers[i]->vars.size()!=0;i++){
         cout<<"layernum: "<<i<<" addr: "<<layers[i];
         if(layers[i]->vars.size()!=0)
         cout<<endl;

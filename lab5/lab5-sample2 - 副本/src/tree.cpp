@@ -165,9 +165,18 @@ string TreeNode::sType2String(StmtType type) {
     case STMT_ASSIGN:
         return "assign";
         break;
-    // case STMT_EXPR:
-    //     return "expr";
-    //     break;
+    case STMT_WHILE:
+        return "while";
+        break;
+    case STMT_IF:
+        return "if";
+        break;
+    case STMT_SCANF:
+        return "scanf";
+        break;
+    case STMT_PRINTF:
+        return "printf";
+        break;
     default:
         break;
     }
@@ -213,6 +222,9 @@ string TreeNode::opType2String(OperatorType type) {
     case OP_DIV:
         return "div";
         break;
+    case OP_EQ:
+        return "bool_eq";
+        break;  
     default:
         return"?";
         break;

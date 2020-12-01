@@ -22,7 +22,7 @@ enum OperatorType
     OP_MINUS,  // -
     OP_MUL,    // \*
     OP_DIV,    // \/
-    OP_MODE,
+    OP_MOD,
     OP_RADDADD,
     OP_RMINUSMINUS,
     OP_NOT
@@ -32,7 +32,7 @@ enum StmtType {
     STMT_SKIP,// 空语句
     STMT_DECL,//声明语句
     STMT_IF, 
-    STMT_LOOP,//循环语句
+    STMT_WHILE,//循环语句
     STMT_ASSIGN,
     STMT_SCANF,
     STMT_PRINTF

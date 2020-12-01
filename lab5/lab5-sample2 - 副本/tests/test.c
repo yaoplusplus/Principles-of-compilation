@@ -9,5 +9,8 @@ char d = 'm';
 string str = "sasa";
 bool bbb = true; 
 d = 'n';
+a+b;
+if(true)
+int ifelse = 78;
 //此处的两个str显然不是重定义,所以添加操作还是要放在main.y
 

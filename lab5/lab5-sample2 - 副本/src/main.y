@@ -8,18 +8,20 @@
     extern int layernum;
     vector<layer*> layers(1,new layer()); //layer array
 %}
-%token IF ELSE WHILE PRINTF SCANF TRUE FALSE
+%token IF ELSE WHILE FOR PRINTF SCANF TRUE FALSE
 %token T_CHAR T_INT T_STRING T_BOOL 
 %token IDENTIFIER INTEGER CHAR BOOL STRING
 
 %token SEMICOLON LBRACE RBRACE LPAREN RPAREN
 %token LOP_ASSIGN 
-%token ADD MINUS MUL DIV //MOD SELFADD SELFMIN NEG
+%token ADD MINUS MUL DIV MOD SELFADD SELFMIN NEG
 
 %left LOP_EQ //==
 %left ADD MINUS 
 %left MUL DIV
 %right NOT
+%nonassoc LOWER_THEN_ELSE
+%nonassoc ELSE
 
 %%
 
@@ -36,6 +38,12 @@ statement
 |   declaration SEMICOLON {$$ = $1;}
 |   assign SEMICOLON {$$ = $1;}
 |   LBRACE statements RBRACE {$$ = $2;}
+|   expr {$$ = $1;}
+|   if_else {$$ = $1;}
+|   while {$$ = $1;}
+|   scanf {$$ = $1;}
+|   printf {$$ = $1;}
+|   for {$$ = $1;}
 ;
 
 declaration
@@ -47,7 +55,7 @@ declaration
         node->addChild($4);
         layer* curlayer = layers[layernum];
         if(curlayer->vars.size()==0){
-                cout<<"initial the curlayer!"<<endl;
+                cout<<"this name : "<<$2->var_name<<endl;
         curlayer->vars.push_back(new variable());
         curlayer->vars[0]->var_name = $2->var_name;
         curlayer->vars[0]->type = $1->type;
@@ -76,7 +84,6 @@ declaration
             }
         }
         if(preflag!=1){
-                cout<<"the id is not the same"<<endl;
             curlayer->vars.push_back(new variable());
             curlayer->vars.back()->var_name = $2->var_name;
             curlayer->vars.back()->type = $1->type;
@@ -135,10 +142,11 @@ assign
         node->stype = STMT_ASSIGN;
         node->addChild($1);
         node->addChild($3);
-        //搜索ID时候在当前层符号表中
+        //搜索ID 在当前层符号表中
         layer* curlayer = layers[layernum];
         int size = curlayer->vars.size();
         //遍历当前层变量
+        // TODO assign 后面是表达式的时候会出错,估计是expr当前没有type 没有val的锅
         for(int i=0; i<size; i++){
                 if(curlayer->vars[i]->var_name == $1->var_name){
                                 if(curlayer->vars[i]->type->type == VALUE_INT){
@@ -154,16 +162,69 @@ assign
                                 curlayer->vars[i]->b_val = $3->b_val;
                                 }
                         }
-
-
                         }
         $$ = node;
-}
-        
+}      
 ;
 
+if_else
+: IF bool_statment statement %prec LOWER_THEN_ELSE { 
+        //意为前句与LOWER_THEN_ELSE同优先级
+        TreeNode *node=new TreeNode(lineno,NODE_STMT);
+        node->stype=STMT_IF;
+        node->addChild($2);
+        node->addChild($3);
+        $$=node;
+}
+| IF bool_statment statement ELSE statement {
+        TreeNode *node=new TreeNode(lineno,NODE_STMT);
+        node->stype=STMT_IF;
+        node->addChild($2);
+        node->addChild($3);
+        node->addChild($5);
+        $$=node;
+}
+;
+
+while
+: WHILE bool_statment statement {
+        TreeNode *node=new TreeNode(lineno,NODE_STMT);
+        node->stype=STMT_WHILE;
+        node->addChild($2);
+        node->addChild($3);
+        $$=node;
+}
+;
+
+printf
+: PRINTF LPAREN expr RPAREN {
+        TreeNode *node=new TreeNode(lineno,NODE_STMT);
+        node->stype=STMT_PRINTF;
+        node->addChild($3);
+        $$=node;
+}
+;
+
+scanf
+: SCANF LPAREN expr RPAREN {
+        TreeNode *node=new TreeNode(lineno,NODE_STMT);
+        node->stype=STMT_SCANF;
+        node->addChild($3);
+        $$=node;
+}
+;
+
+for
+: FOR LPAREN declaration SEMICOLON bool_expr SEMICOLON IDENTIFIER SELFADD RPAREN statement{
+}
+;
+
+bool_statment
+: LPAREN bool_expr RPAREN {$$=$2;}
+;
 expr
 :   IDENTIFIER {
+
         $$ = $1;
 }
 |   INTEGER {
@@ -184,6 +245,8 @@ expr
 |   expr ADD expr{
         TreeNode* node = new TreeNode($1->lineno, NODE_EXPR);
         node->optype = OP_ADD;
+        node->type = TYPE_INT;
+        node->int_val = $1->int_val + $3->int_val;
         node->addChild($1);
         node->addChild($3);
         $$ = node;
@@ -191,6 +254,8 @@ expr
 |   expr MINUS expr{
         TreeNode*node = new TreeNode($1->lineno,NODE_EXPR);
         node->optype = OP_MINUS;
+        node->type = TYPE_INT;
+        node->int_val = $1->int_val - $3->int_val;
         node->addChild($1);
         node->addChild($3);
         $$ = node;
@@ -198,6 +263,8 @@ expr
 |   expr MUL expr{
         TreeNode*node = new TreeNode($1->lineno,NODE_EXPR);
         node->optype = OP_MUL;
+        node->type = TYPE_INT;
+        node->int_val = $1->int_val * $3->int_val;
         node->addChild($1);
         node->addChild($3);
         $$ = node;
@@ -205,9 +272,38 @@ expr
 |   expr DIV expr{
         TreeNode*node = new TreeNode($1->lineno,NODE_EXPR);
         node->optype = OP_DIV;
+        node->type = TYPE_INT;
+        node->int_val = $1->int_val / $3->int_val;
         node->addChild($1);
         node->addChild($3);
         $$ = node;
+}
+|  expr MOD expr{
+        TreeNode*node = new TreeNode($1->lineno,NODE_EXPR);
+        node->optype = OP_MOD;
+        node->type = TYPE_INT;
+        node->int_val = $1->int_val % $3->int_val;
+        node->addChild($1);
+        node->addChild($3);
+        $$ = node;
+}
+;
+
+bool_expr
+: TRUE {$$=$1;}
+| FALSE {$$=$1;}
+| expr LOP_EQ expr {
+        TreeNode *node=new TreeNode(lineno,NODE_EXPR);
+        node->optype=OP_EQ;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+}
+| NOT bool_expr {
+        TreeNode *node=new TreeNode(lineno,NODE_EXPR);
+        node->optype=OP_NOT;
+        node->addChild($2);
+        $$=node;        
 }
 ;
 
