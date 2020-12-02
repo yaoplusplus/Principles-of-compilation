@@ -1,6 +1,4 @@
-this name : a
-this name : b
-0 2
+expr : b+2 = 4
 lno@0	@29 program children: [3 7 21 28  ]
 lno@1	@3 statement children: [0 1 2  ] stmt:decl
 lno@1	@0 type type:int
@@ -32,10 +30,10 @@ lno@8	@26 statement children: [25  stmt:printf
 lno@8	@25 variable varname: a
 lno@8	@27 statement stmt:skip
 ---------------------------------------------------
-layernum: 0 addr: 0x7fffc8d440b0
+layernum: 0 addr: 0x7ffff11c30b0
  var: a type: int value: 0
  var: b type: int value: 2
 
-layernum: 1 addr: 0x7fffc8d4a7e0
- var: b type: int value: 2
+layernum: 1 addr: 0x7ffff11c87d0
+ var: b type: int value: 4
 

@@ -55,7 +55,6 @@ declaration
         node->addChild($4);
         layer* curlayer = layers[layernum];
         if(curlayer->vars.size()==0){
-                cout<<"this name : "<<$2->var_name<<endl;
         curlayer->vars.push_back(new variable());
         curlayer->vars[0]->var_name = $2->var_name;
         curlayer->vars[0]->type = $1->type;
@@ -149,6 +148,7 @@ assign
         // TODO assign 后面是表达式的时候会出错,估计是expr当前没有type 没有val的锅
         for(int i=0; i<size; i++){
                 if(curlayer->vars[i]->var_name == $1->var_name){
+                        cout<<"expr : b+2 = "<<$3->int_val<<endl;
                                 if(curlayer->vars[i]->type->type == VALUE_INT){
                                 curlayer->vars[i]->int_val = $3->int_val;
                                 }
@@ -164,7 +164,7 @@ assign
                         }
                         }
         $$ = node;
-}      
+}  
 ;
 
 if_else
@@ -224,7 +224,14 @@ bool_statment
 ;
 expr
 :   IDENTIFIER {
-
+        //expr -> IDENTIFIER 时未查找符号表,实现一个查找
+        layer* curlayer = layers[layernum];
+        int size = layers[layernum]->vars.size();
+        for(int i = 0; i < size; i++){
+                if(layers[layernum]->vars[i]->var_name == $1->var_name){
+                        $1->int_val = layers[layernum]->vars[i]->int_val;
+                }
+        }
         $$ = $1;
 }
 |   INTEGER {
