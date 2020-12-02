@@ -12,6 +12,7 @@ enum NodeType
     NODE_TYPE, //节点的类型是类型
     NODE_STMT,
     NODE_PROG,
+    NODE_FUNC,
     NODE_BOOL
 };
 
@@ -39,6 +40,10 @@ enum StmtType {
 }
 ;
 
+enum FuncType {
+    FUNC_VOID
+};
+
 static int nodecount=0;
 
 struct TreeNode {
@@ -65,6 +70,7 @@ public:
     OperatorType optype;    // 如果是操作符节点:那么是什么操作符在此处
     Type* type;             // NODE_TYPE :bool,int,...
     StmtType stype;         //NODE_STMT 语句类型：跳转、循环、
+    FuncType ftype;
     int int_val;
     char ch_val;
     bool b_val;

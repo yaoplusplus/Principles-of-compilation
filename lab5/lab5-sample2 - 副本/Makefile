@@ -1,5 +1,5 @@
 CC := g++
-CFLAGS := -w -Wextra -std=c++11 # without debug //-Wall 显示所有警告 not uesed , ==null
+CFLAGS := -w -Wextra -std=c++11 # without debug //-Wall 显示所有警告 -w 不显示警告 , ==null
 TARGET := ./bin/main
 
 all: run
@@ -26,10 +26,10 @@ run: lex yacc main
 
 clean:
 	rm -f src/*.output src/main.lex.yy.cpp src/main.tab.cpp src/main.tab.h src/main.output src/pch.h.gch $(TARGET) *.o ./bin/* 
-	rm result.txt
+	rm result.txt result1.txt result2.txt
 test: 
 	./bin/main tests/test.c > result.txt
 test1:
 	./bin/main tests/test1.c > result1.txt
 test2:
-	./bin/main tests/test2.c > result1.txt
+	./bin/main tests/test2.c > result2.txt

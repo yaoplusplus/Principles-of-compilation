@@ -31,15 +31,16 @@ BOOL [true | false]
 "bool" return T_BOOL;
 "char" return T_CHAR;
 "string" return T_STRING;
-
+"void" return T_VOID;
+"main" return MAIN;
 "if" return IF;
 "while" return WHILE;
 "else" return ELSE;
-
 "printf" return PRINTF;
 "scanf" return SCANF;
 
-"++"
+"++" return SELFADD;
+"--" return SELFMIN;
 "==" return LOP_EQ;
 "=" return LOP_ASSIGN;
 "+" return ADD;
@@ -48,7 +49,10 @@ BOOL [true | false]
 "/" return DIV;
 "!" return NOT;
 "%" return MOD;
+"&" return TAKEADDR;
+"&&" return LOG_AND;
 
+"," return COMMA;
 ";" return  SEMICOLON;
 "(" return LPAREN;
 ")" return RPAREN;

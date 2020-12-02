@@ -9,12 +9,13 @@
     vector<layer*> layers(1,new layer()); //layer array
 %}
 %token IF ELSE WHILE FOR PRINTF SCANF TRUE FALSE
-%token T_CHAR T_INT T_STRING T_BOOL 
-%token IDENTIFIER INTEGER CHAR BOOL STRING
-
-%token SEMICOLON LBRACE RBRACE LPAREN RPAREN
+%token T_CHAR T_INT T_STRING T_BOOL T_VOID
+%token IDENTIFIER INTEGER CHAR BOOL STRING VOID 
+%token MAIN
+%token SEMICOLON COMMA LBRACE RBRACE LPAREN RPAREN
 %token LOP_ASSIGN 
 %token ADD MINUS MUL DIV MOD SELFADD SELFMIN NEG
+%token LOG_AND TAKEADDR
 
 %left LOP_EQ //==
 %left ADD MINUS 
@@ -44,6 +45,7 @@ statement
 |   scanf {$$ = $1;}
 |   printf {$$ = $1;}
 |   for {$$ = $1;}
+|   function {$$ = $1;}
 ;
 
 declaration
@@ -105,7 +107,7 @@ declaration
     }
         $$ = node;   
 } 
-| T IDENTIFIER {// declare
+| T IDENTIFIERLIST {// declare
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_DECL;
         node->addChild($1);
@@ -135,7 +137,10 @@ declaration
 }
 ;
 
-assign 
+IDENTIFIERLIST
+:   IDENTIFIER{$$ = $1;}
+|   IDENTIFIERLIST COMMA IDENTIFIER {$$ = $1; $$->addSibling($3);}
+assign //TODO assign 查找ID时不能只看当前层,需要进一步改进
 :   IDENTIFIER LOP_ASSIGN expr {//update the IDTABLE
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_ASSIGN;
@@ -145,10 +150,8 @@ assign
         layer* curlayer = layers[layernum];
         int size = curlayer->vars.size();
         //遍历当前层变量
-        // TODO assign 后面是表达式的时候会出错,估计是expr当前没有type 没有val的锅
         for(int i=0; i<size; i++){
                 if(curlayer->vars[i]->var_name == $1->var_name){
-                        cout<<"expr : b+2 = "<<$3->int_val<<endl;
                                 if(curlayer->vars[i]->type->type == VALUE_INT){
                                 curlayer->vars[i]->int_val = $3->int_val;
                                 }
@@ -216,6 +219,25 @@ scanf
 
 for
 : FOR LPAREN declaration SEMICOLON bool_expr SEMICOLON IDENTIFIER SELFADD RPAREN statement{
+
+}
+;
+
+function
+: T_VOID MAIN funcargs statement{
+        TreeNode* node = new TreeNode($2->lineno,NODE_FUNC);
+        cout<<"function initial successfully"<<endl;
+        //此处的处理有些不妥当,TYPE_VOID 和 node -> ftype = FUNC_VOID 是否冗余
+        node->ftype = FUNC_VOID;
+        node->addChild($1);
+        node->addChild($2);
+        node->addChild($4);
+
+}
+;
+
+funcargs
+:   LPAREN RPAREN{
 }
 ;
 
@@ -228,8 +250,8 @@ expr
         layer* curlayer = layers[layernum];
         int size = layers[layernum]->vars.size();
         for(int i = 0; i < size; i++){
-                if(layers[layernum]->vars[i]->var_name == $1->var_name){
-                        $1->int_val = layers[layernum]->vars[i]->int_val;
+                if(curlayer->vars[i]->var_name == $1->var_name){
+                        $1->int_val = curlayer->vars[i]->int_val;
                 }
         }
         $$ = $1;
@@ -319,6 +341,7 @@ T
 |   T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
 |   T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
 |   T_STRING {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_STRING;}
+|   T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_VOID;}
 ;
 
 %%
