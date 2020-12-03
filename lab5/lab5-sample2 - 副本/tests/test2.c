@@ -5,6 +5,8 @@ s = 0;
 char ch;
 scanf("\%d", &ch);
 while(a>0 && a<=10 || a%100==10 && !a==10) {
+    int sh = 10; //不会是空语句块的原因吧,确实
+}
 a -= 1;
 int a;
 a = 10;
@@ -13,9 +15,9 @@ if(-s < -10) {
 printf("result is: %d\n", s);
 int b;
 b = 10;
-for(int i=0; i<b; i++) {
+for(int i=0; i<b; i++) 
+{
 printf("Have fun: %d\n", i);
-}
 }
 }
 }

@@ -15,12 +15,13 @@ EOL	(\r\n|\r|\n)
 WHILTESPACE [[:blank:]]
 
 INTEGER [0-9]+
-CHAR \'.?\'
+CHAR \'.?\' 
 STRING \".+\"
 IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
 LBRACE \{
 RBRACE \}
 BOOL [true | false]
+DQUOTATION \"
 
 %%
 
@@ -36,6 +37,7 @@ BOOL [true | false]
 "if" return IF;
 "while" return WHILE;
 "else" return ELSE;
+"for" return FOR;
 "printf" return PRINTF;
 "scanf" return SCANF;
 
@@ -45,17 +47,27 @@ BOOL [true | false]
 "=" return LOP_ASSIGN;
 "+" return ADD;
 "-" return MINUS;
+"-=" return MINASSIGN;
+"+=" return ADDASSIGN;
+
+"<" return LESSTHAN;
+">" return MORETHAN;
+"<=" return LESSTHANEQ;
+">=" return MORETHANEQ;
 "*" return MUL;
 "/" return DIV;
 "!" return NOT;
 "%" return MOD;
 "&" return TAKEADDR;
+
 "&&" return LOG_AND;
+"||" return LOG_OR;
 
 "," return COMMA;
 ";" return  SEMICOLON;
 "(" return LPAREN;
 ")" return RPAREN;
+
 
 {LBRACE} {
     //每次遇到一个层级加一 就初始化一个层级

@@ -24,19 +24,25 @@ enum OperatorType
     OP_MUL,    // \*
     OP_DIV,    // \/
     OP_MOD,
-    OP_RADDADD,
-    OP_RMINUSMINUS,
-    OP_NOT
+    OP_SELFADD,
+    OP_SELFMIN,
+    OP_NOT,
+    OP_TAKEADDR,
+    OP_LOG_AND,
+    OP_LOG_OR,
+    OP_COMP,
+    OP_UMINUS //负号
 };
 
 enum StmtType {
     STMT_SKIP,// 空语句
     STMT_DECL,//声明语句
     STMT_IF, 
-    STMT_WHILE,//循环语句
+    STMT_WHILE,
     STMT_ASSIGN,
     STMT_SCANF,
-    STMT_PRINTF
+    STMT_PRINTF,
+    STMT_FOR
 }
 ;
 

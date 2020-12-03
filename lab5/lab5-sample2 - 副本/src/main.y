@@ -11,16 +11,21 @@
 %token IF ELSE WHILE FOR PRINTF SCANF TRUE FALSE
 %token T_CHAR T_INT T_STRING T_BOOL T_VOID
 %token IDENTIFIER INTEGER CHAR BOOL STRING VOID 
-%token MAIN
-%token SEMICOLON COMMA LBRACE RBRACE LPAREN RPAREN
-%token LOP_ASSIGN 
-%token ADD MINUS MUL DIV MOD SELFADD SELFMIN NEG
-%token LOG_AND TAKEADDR
-
+%token MAIN 
+%token SEMICOLON COMMA DQUOTATION LBRACE RBRACE LPAREN RPAREN
+%token LOP_ASSIGN TAKEADDR
+%token ADD MINUS MUL DIV MOD SELFADD SELFMIN NEG 
+%token LOG_AND LOG_OR  LESSTHAN MORETHAN LESSTHANEQ MORETHANEQ
+//%right *= /= 
+%right MINASSIGN ADDASSIGN
+%right LOP_ASSIGN
+%left LOG_OR
+%left LOG_AND
 %left LOP_EQ //==
+%left LESSTHAN MORETHAN LESSTHANEQ MORETHANEQ
 %left ADD MINUS 
-%left MUL DIV
-%right NOT
+%left MUL DIV MOD
+%right NOT SELFADD SELFMIN UMINUS //负号
 %nonassoc LOWER_THEN_ELSE
 %nonassoc ELSE
 
@@ -46,6 +51,7 @@ statement
 |   printf {$$ = $1;}
 |   for {$$ = $1;}
 |   function {$$ = $1;}
+// TODO 此处应将function 归入 声明
 ;
 
 declaration
@@ -112,7 +118,7 @@ declaration
         node->stype = STMT_DECL;
         node->addChild($1);
         node->addChild($2);
-
+        //添加ID要访问$2 (IDENTIFIERLIST) 的兄弟
         layer* curlayer = layers[layernum];
         if(curlayer->vars.size()==0){
         curlayer->vars.push_back(new variable());
@@ -140,7 +146,7 @@ declaration
 IDENTIFIERLIST
 :   IDENTIFIER{$$ = $1;}
 |   IDENTIFIERLIST COMMA IDENTIFIER {$$ = $1; $$->addSibling($3);}
-assign //TODO assign 查找ID时不能只看当前层,需要进一步改进
+assign //TODO assign 查找ID时不能只看当前层,需要进一步改进(优先看本层)
 :   IDENTIFIER LOP_ASSIGN expr {//update the IDTABLE
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_ASSIGN;
@@ -167,7 +173,21 @@ assign //TODO assign 查找ID时不能只看当前层,需要进一步改进
                         }
                         }
         $$ = node;
-}  
+}
+|   IDENTIFIER MINASSIGN expr {
+        TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
+        node->stype = STMT_ASSIGN;
+        node->addChild($1);
+        node->addChild($3);
+        $$ = node;
+}
+|   IDENTIFIER ADDASSIGN expr {
+        TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
+        node->stype = STMT_ASSIGN;
+        node->addChild($1);
+        node->addChild($3);
+        $$ = node;
+} 
 ;
 
 if_else
@@ -200,26 +220,34 @@ while
 ;
 
 printf
-: PRINTF LPAREN expr RPAREN {
+: PRINTF LPAREN expr COMMA expr RPAREN {
         TreeNode *node=new TreeNode(lineno,NODE_STMT);
         node->stype=STMT_PRINTF;
         node->addChild($3);
+        node->addChild($5);
         $$=node;
 }
 ;
 
 scanf
-: SCANF LPAREN expr RPAREN {
+: SCANF LPAREN expr COMMA expr RPAREN {
         TreeNode *node=new TreeNode(lineno,NODE_STMT);
         node->stype=STMT_SCANF;
         node->addChild($3);
+        node->addChild($5);
         $$=node;
 }
 ;
-
+//
 for
-: FOR LPAREN declaration SEMICOLON bool_expr SEMICOLON IDENTIFIER SELFADD RPAREN statement{
-
+: FOR LPAREN declaration SEMICOLON bool_expr SEMICOLON expr RPAREN statement{
+        TreeNode *node=new TreeNode(lineno,NODE_STMT);
+        node->stype=STMT_FOR;
+        node->addChild($3);
+        node->addChild($5);
+        node->addChild($7);
+        node->addChild($9);
+        $$=node;
 }
 ;
 
@@ -232,10 +260,10 @@ function
         node->addChild($1);
         node->addChild($2);
         node->addChild($4);
-
+        $$=node;
 }
 ;
-
+// TODO remove
 funcargs
 :   LPAREN RPAREN{
 }
@@ -265,11 +293,12 @@ expr
 |   STRING {
         $$ = $1;
 }
-|   FALSE {
-        $$ = $1;
-}
-|   TRUE {
-        $$ = $1;
+|   MINUS expr %prec UMINUS{
+        TreeNode* node = new TreeNode($1->lineno, NODE_EXPR);
+        node->optype = OP_UMINUS;
+        node->type = TYPE_INT;
+        node->addChild($2);
+        $$ = node;
 }
 |   expr ADD expr{
         TreeNode* node = new TreeNode($1->lineno, NODE_EXPR);
@@ -307,7 +336,7 @@ expr
         node->addChild($3);
         $$ = node;
 }
-|  expr MOD expr{
+|   expr MOD expr{
         TreeNode*node = new TreeNode($1->lineno,NODE_EXPR);
         node->optype = OP_MOD;
         node->type = TYPE_INT;
@@ -316,19 +345,77 @@ expr
         node->addChild($3);
         $$ = node;
 }
+|   TAKEADDR expr{
+        TreeNode*node = new TreeNode($1->lineno,NODE_EXPR);
+        node->optype = OP_TAKEADDR;
+        node->addChild($2);
+}
+|   expr SELFADD{
+        TreeNode*node = new TreeNode($1->lineno,NODE_EXPR);
+        node->optype = OP_SELFADD;
+        node->addChild($1);
+}
+|   expr SELFMIN{
+        TreeNode*node = new TreeNode($1->lineno,NODE_EXPR);
+        node->optype = OP_SELFMIN;
+        node->addChild($2);        
+}
 ;
 
 bool_expr
-: TRUE {$$=$1;}
-| FALSE {$$=$1;}
-| expr LOP_EQ expr {
+:   TRUE {$$=$1;}
+|   FALSE {$$=$1;}
+|   expr {$$=$1;} //不知道会不会有bug
+|   bool_expr LOP_EQ bool_expr {// ==
         TreeNode *node=new TreeNode(lineno,NODE_EXPR);
         node->optype=OP_EQ;
         node->addChild($1);
         node->addChild($3);
         $$=node;
 }
-| NOT bool_expr {
+|   bool_expr LOG_AND bool_expr { 
+        TreeNode *node=new TreeNode(lineno,NODE_EXPR);
+        node->optype=OP_LOG_AND;
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+}
+|   bool_expr LOG_OR bool_expr{
+        TreeNode *node=new TreeNode(lineno,NODE_EXPR);
+         node->optype=OP_LOG_OR; //合起来好,还是分出来好呢?
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+}
+|   bool_expr MORETHAN bool_expr{
+        TreeNode *node=new TreeNode(lineno,NODE_EXPR);
+        node->optype=OP_COMP; 
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+}
+|   bool_expr LESSTHAN bool_expr{
+        TreeNode *node=new TreeNode(lineno,NODE_EXPR);
+        node->optype=OP_COMP; 
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+}
+|   bool_expr MORETHANEQ bool_expr{
+        TreeNode *node=new TreeNode(lineno,NODE_EXPR);
+        node->optype=OP_COMP; 
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+}
+|   bool_expr LESSTHANEQ bool_expr{
+        TreeNode *node=new TreeNode(lineno,NODE_EXPR);
+        node->optype=OP_COMP; 
+        node->addChild($1);
+        node->addChild($3);
+        $$=node;
+}
+|   NOT bool_expr {
         TreeNode *node=new TreeNode(lineno,NODE_EXPR);
         node->optype=OP_NOT;
         node->addChild($2);
