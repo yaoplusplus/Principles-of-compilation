@@ -44,6 +44,7 @@ statement
 |   declaration SEMICOLON {$$ = $1;}
 |   assign SEMICOLON {$$ = $1;}
 |   LBRACE statements RBRACE {$$ = $2;}
+|   LBRACE RBRACE {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}
 |   expr {$$ = $1;}
 |   if_else {$$ = $1;}
 |   while {$$ = $1;}
@@ -118,27 +119,33 @@ declaration
         node->stype = STMT_DECL;
         node->addChild($1);
         node->addChild($2);
-        //添加ID要访问$2 (IDENTIFIERLIST) 的兄弟
-        layer* curlayer = layers[layernum];
-        if(curlayer->vars.size()==0){
-        curlayer->vars.push_back(new variable());
-        curlayer->vars[0]->var_name = $2->var_name;
-        curlayer->vars[0]->type = $1->type;
-        }
-         else{
-                int size = curlayer->vars.size();
-                int preflag = 0;
-                for(int i=0; i<size; i++){
-                        if(curlayer->vars[i]->var_name == $2->var_name){
-                        preflag = 1;
+        //添加的ID 包括$2 (IDENTIFIERLIST) 的兄弟
+        //$2指向当前大哥 :即第一个声明的ID
+        TreeNode* curid = $2;
+        while(curid != nullptr){
+                
+                layer* curlayer = layers[layernum];
+                if(curlayer->vars.size()==0){
+                        curlayer->vars.push_back(new variable());
+                        curlayer->vars[0]->var_name = curid->var_name;
+                        curlayer->vars[0]->type = $1->type;
+                }
+                else{
+                        int size = curlayer->vars.size();
+                        int preflag = 0;
+                        for(int i=0; i<size; i++){
+                                if(curlayer->vars[i]->var_name == curid->var_name){
+                                        preflag = 1;
+                                }
+                        }
+                        if(preflag!=1){
+                                curlayer->vars.push_back(new variable());
+                                curlayer->vars.back()->var_name = curid->var_name;
+                                curlayer->vars.back()->type = $1->type;
                         }
                 }
-                if(preflag!=1){
-                curlayer->vars.push_back(new variable());
-                curlayer->vars.back()->var_name = $2->var_name;
-                curlayer->vars.back()->type = $1->type;
-                }
-    }
+                curid = curid->sibling;
+        }
         $$ = node;   
 }
 ;
@@ -146,6 +153,8 @@ declaration
 IDENTIFIERLIST
 :   IDENTIFIER{$$ = $1;}
 |   IDENTIFIERLIST COMMA IDENTIFIER {$$ = $1; $$->addSibling($3);}
+;
+
 assign //TODO assign 查找ID时不能只看当前层,需要进一步改进(优先看本层)
 :   IDENTIFIER LOP_ASSIGN expr {//update the IDTABLE
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
@@ -227,6 +236,12 @@ printf
         node->addChild($5);
         $$=node;
 }
+| PRINTF LPAREN expr RPAREN{
+        TreeNode *node=new TreeNode(lineno,NODE_STMT);
+        node->stype=STMT_PRINTF;
+        node->addChild($3);
+        $$=node;
+}
 ;
 
 scanf
@@ -252,8 +267,8 @@ for
 ;
 
 function
-: T_VOID MAIN funcargs statement{
-        TreeNode* node = new TreeNode($2->lineno,NODE_FUNC);
+: T MAIN LPAREN RPAREN statement{
+        TreeNode*node = new TreeNode($2->lineno,NODE_FUNC);
         cout<<"function initial successfully"<<endl;
         //此处的处理有些不妥当,TYPE_VOID 和 node -> ftype = FUNC_VOID 是否冗余
         node->ftype = FUNC_VOID;
@@ -263,11 +278,8 @@ function
         $$=node;
 }
 ;
-// TODO remove
-funcargs
-:   LPAREN RPAREN{
-}
-;
+// TODO remove add main to the IDtable so main should be a ID and set a flag to
+//      make sure that there is only one main
 
 bool_statment
 : LPAREN bool_expr RPAREN {$$=$2;}

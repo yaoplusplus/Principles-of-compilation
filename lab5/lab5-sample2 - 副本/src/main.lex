@@ -33,6 +33,7 @@ DQUOTATION \"
 "char" return T_CHAR;
 "string" return T_STRING;
 "void" return T_VOID;
+
 "main" return MAIN;
 "if" return IF;
 "while" return WHILE;

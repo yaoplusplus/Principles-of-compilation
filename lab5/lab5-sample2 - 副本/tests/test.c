@@ -1,16 +1,4 @@
-int aTT = 45;
-int b0 = 45;
-{
-    int c = 8;
-    string str ="hello";
-    string str ="re";
-}
-char d = 'm';
-string str = "sasa";
-bool bbb = true; 
-d = 'n';
-a+b;
-if(true)
-int ifelse = 78;
-//此处的两个str显然不是重定义,所以添加操作还是要放在main.y
-
+int b = 2; // 4个
+// void main() {
+//     int a = 1; // 8个
+// };
