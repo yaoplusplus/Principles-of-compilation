@@ -41,20 +41,28 @@ statements
 
 statement
 :   SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}//分号-STMT_SKIP
-|   declaration SEMICOLON {$$ = $1;}
+|   declaration {$$ = $1;}
 |   assign SEMICOLON {$$ = $1;}
-|   LBRACE statements RBRACE {$$ = $2;}
+|   LBRACE statements RBRACE {$$ = $2; cout << "??" << endl;}
 |   LBRACE RBRACE {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}
-|   expr {$$ = $1;}
+|   expr SEMICOLON {$$ = $1;}
 |   if_else {$$ = $1;}
 |   while {$$ = $1;}
-|   scanf {$$ = $1;}
-|   printf {$$ = $1;}
+|   scanf SEMICOLON {$$ = $1;}
+|   printf SEMICOLON{$$ = $1;}
 |   for {$$ = $1;}
+| T MAIN LPAREN RPAREN statement {
+        
+        TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
+        node->stype = STMT_DECL;
+        node->addChild($1);
+        node->addChild($5);
+        $$ = node;
+}
 ;
 
 declaration
-: T IDENTIFIER LOP_ASSIGN expr{// declare and init
+: T IDENTIFIER LOP_ASSIGN expr  SEMICOLON{// declare and init
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_DECL;
         node->addChild($1);
@@ -113,7 +121,7 @@ declaration
     }
         $$ = node;   
 } 
-| T IDENTIFIERLIST {// declare
+| T IDENTIFIERLIST  SEMICOLON {// declare
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_DECL;
         node->addChild($1);
@@ -148,14 +156,6 @@ declaration
         }
         $$ = node;   
 } // 函数声明
-| T MAIN LPAREN RPAREN statement {
-        TreeNode* node = new TreeNode($2->lineno,NODE_STMT);
-        node->stype = STMT_DECL;
-        node->addChild($1);
-        // node->addChild($2);暂时不把函数名加入树
-        node->addChild($5);
-        $$ = node;
-}
 ;
 
 IDENTIFIERLIST
@@ -253,7 +253,7 @@ printf
 ;
 
 scanf
-: SCANF LPAREN expr COMMA IDENTIFIER RPAREN SEMICOLON{
+: SCANF LPAREN expr COMMA expr RPAREN SEMICOLON{
         TreeNode *node=new TreeNode(lineno,NODE_STMT);
         node->stype=STMT_SCANF;
         node->addChild($3);

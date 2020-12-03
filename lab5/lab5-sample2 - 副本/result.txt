@@ -1,0 +1,24 @@
+void
+success
+??
+???
+?
+lno@0	@10 program children: [3 9  ]
+lno@1	@3 statement children: [0 1 2  ] stmt:decl
+lno@1	@0 type type:int
+lno@1	@1 variable varname: a
+lno@1	@2 const type: 1
+lno@2	@9 statement children: [4 8  ] stmt:decl
+lno@2	@4 type type:void
+lno@2	@8 statement children: [5 6 7  ] stmt:decl
+lno@2	@5 type type:int
+lno@2	@6 variable varname: a
+lno@2	@7 const type: 1
+---------------------------------------------------
+the num of the layers: 2
+layernum: 0 addr: 0x7fffcd8cb140
+ var: a type: int value: 1
+
+layernum: 1 addr: 0x7fffcd8d1980
+ var: a type: int value: 1
+

@@ -17,9 +17,14 @@ struct variable{
 
     };
 };
+// struct variables{
+//     public:
+//     vector<variable*> vars;
+// };
 struct layer{
     public:
     vector<variable*> vars;//每一个layer有一个var数组
+    
     layer(){
     };
 };

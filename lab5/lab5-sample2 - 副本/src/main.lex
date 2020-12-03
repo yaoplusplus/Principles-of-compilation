@@ -35,7 +35,9 @@ DQUOTATION \"
 "string" return T_STRING;
 "void" return T_VOID;
 
-"main" return MAIN;
+"main" {
+    cout<<"success"<<endl;
+    return MAIN;}
 "if" return IF;
 "while" return WHILE;
 "else" return ELSE;
