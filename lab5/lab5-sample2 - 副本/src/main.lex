@@ -18,6 +18,7 @@ INTEGER [0-9]+
 CHAR \'.?\' 
 STRING \".+\"
 IDENTIFIER [[:alpha:]_][[:alpha:][:digit:]_]*
+IDADDR \&[[:alpha:]_][[:alpha:][:digit:]_]*
 LBRACE \{
 RBRACE \}
 BOOL [true | false]
@@ -128,6 +129,12 @@ DQUOTATION \"
     node->var_name = string(yytext);
     yylval = node;
     return IDENTIFIER;
+}
+{IDADDR} {
+    TreeNode* node = new TreeNode(lineno, NODE_VAR);
+    node->var_name = string(yytext);
+    yylval = node;
+    return IDADDR;
 }
 
 {WHILTESPACE} /* do nothing */

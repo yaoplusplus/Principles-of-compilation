@@ -42,6 +42,8 @@
         "initializer_list": "cpp",
         "iostream": "cpp",
         "stdexcept": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "ctime": "cpp",
+        "iomanip": "cpp"
     }
 }

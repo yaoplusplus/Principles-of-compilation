@@ -19,5 +19,5 @@ void main() {
         {
             printf("Have fun: %d\n", i);
         }
-     }
+    }
 }

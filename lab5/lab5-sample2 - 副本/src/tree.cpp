@@ -39,69 +39,67 @@ void TreeNode::printNodeInfo() {
     if (this == nullptr)
         return;
     switch (this->nodeType) {
-    case NODE_PROG:
-        std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
-            << " program";
-        this->printChildrenId();
-        cout << endl;
-        break;
-    case NODE_CONST:
-    std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
-            << " const type: ";
-        switch(this->type->type){
+        case NODE_PROG:
+            std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
+                << " program";
+            this->printChildrenId();
+            cout << endl;
+            break;
+        case NODE_CONST:
+            std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
+                << " const type: ";
+            switch(this->type->type){
 
-        case VALUE_STRING:
-        cout<<this->str_val<<endl;
+                case VALUE_STRING:
+                    cout<<this->str_val<<endl;
+                    break;
+
+                case VALUE_INT:
+                    cout<<this->int_val<<endl;
+                    break;
+
+                case VALUE_CHAR:
+                    cout<<this->ch_val<<endl;
+                    break;
+            
+                case VALUE_BOOL:
+                    cout<<this->b_val<<endl;
+                    break;
+                default:
+                    break;
+            }
             break;
 
-        case VALUE_INT:
-        cout<<this->int_val<<endl;
+        case NODE_VAR:
+            std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
+                << " variable varname: " << this->var_name;
+            cout << endl;
             break;
 
-        case VALUE_CHAR:
-        cout<<this->ch_val<<endl;
+        case NODE_EXPR:
+            std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
+                << " expression";
+            this->printChildrenId();
+            cout<<" expr:"<<this->opType2String(this->optype)<<endl;
             break;
-        
-        case VALUE_BOOL:
-        cout<<this->b_val<<endl;
+
+        case NODE_STMT:
+            std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
+                << " " << "statement";
+            this->printChildrenId();
+            //print statement type
+            std::cout << " stmt:" << this->sType2String(this->stype);
+            cout << endl;
+            break;
+
+        case NODE_TYPE:
+            std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
+                << " type type:" << this->type->getTypeInfo();
+            cout << endl;
             break;
 
         default:
             break;
-        }
-        
-        break;
-
-    case NODE_VAR:
-        std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
-            << " variable varname: " << this->var_name;
-        cout << endl;
-        break;
-
-    case NODE_EXPR:
-        std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
-            << " expression";
-        this->printChildrenId();
-        cout<<" expr:"<<this->opType2String(this->optype)<<endl;
-        break;
-
-    case NODE_STMT:
-        std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
-            << " " << "statement";
-        this->printChildrenId();
-        //print statement type
-        std::cout << " stmt:" << this->sType2String(this->stype);
-        cout << endl;
-        break;
-
-    case NODE_TYPE:
-        std::cout << "lno@" << this->lineno << "\t@" << this->nodeID
-            << " type type:" << this->type->getTypeInfo();
-        cout << endl;
-        break;
-
-    default:
-        break;
     }
 }
 
@@ -112,8 +110,10 @@ void TreeNode::printChildrenId() {
     else {
         std::cout << " children: [";
         std::cout << this->child->nodeID << " ";
-        if (this->child->sibling == nullptr)
+        if (this->child->sibling == nullptr){
+            cout << " ]";
             return;
+        }
         //sibling
         else {
             std::cout << this->child->sibling->nodeID << " ";
@@ -126,6 +126,7 @@ void TreeNode::printChildrenId() {
         }
         std::cout << " ]";
     }
+    return;
 }
 
 void TreeNode::printAST() {// father first

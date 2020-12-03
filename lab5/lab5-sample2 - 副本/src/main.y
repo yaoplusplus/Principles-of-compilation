@@ -10,7 +10,7 @@
 %}
 %token IF ELSE WHILE FOR PRINTF SCANF TRUE FALSE
 %token T_CHAR T_INT T_STRING T_BOOL T_VOID
-%token IDENTIFIER INTEGER CHAR BOOL STRING VOID 
+%token IDENTIFIER IDADDR INTEGER CHAR BOOL STRING VOID 
 %token MAIN 
 %token SEMICOLON COMMA DQUOTATION LBRACE RBRACE LPAREN RPAREN
 %token LOP_ASSIGN TAKEADDR
@@ -25,7 +25,7 @@
 %left LESSTHAN MORETHAN LESSTHANEQ MORETHANEQ
 %left ADD MINUS 
 %left MUL DIV MOD
-%right NOT SELFADD SELFMIN UMINUS //负号
+%right NOT SELFADD SELFMIN UMINUS TAKEADDR//负号
 %nonassoc LOWER_THEN_ELSE
 %nonassoc ELSE
 
@@ -51,8 +51,6 @@ statement
 |   scanf {$$ = $1;}
 |   printf {$$ = $1;}
 |   for {$$ = $1;}
-|   function {$$ = $1;}
-// TODO 此处应将function 归入 声明
 ;
 
 declaration
@@ -89,6 +87,7 @@ declaration
         for(int i=0; i<size; i++){
             if(curlayer->vars[i]->var_name == $2->var_name){
                 preflag = 1;
+                cout<<"IDENTIFIER "<< $2->var_name <<" is still declared"<<endl;
             }
         }
         if(preflag!=1){
@@ -136,6 +135,7 @@ declaration
                         for(int i=0; i<size; i++){
                                 if(curlayer->vars[i]->var_name == curid->var_name){
                                         preflag = 1;
+                                        cout<<"IDENTIFIER "<< $2->var_name <<" is still declared"<<endl; 
                                 }
                         }
                         if(preflag!=1){
@@ -147,6 +147,14 @@ declaration
                 curid = curid->sibling;
         }
         $$ = node;   
+} // 函数声明
+| T MAIN LPAREN RPAREN statement {
+        TreeNode* node = new TreeNode($2->lineno,NODE_STMT);
+        node->stype = STMT_DECL;
+        node->addChild($1);
+        // node->addChild($2);暂时不把函数名加入树
+        node->addChild($5);
+        $$ = node;
 }
 ;
 
@@ -245,11 +253,28 @@ printf
 ;
 
 scanf
-: SCANF LPAREN expr COMMA expr RPAREN {
+: SCANF LPAREN expr COMMA IDENTIFIER RPAREN SEMICOLON{
         TreeNode *node=new TreeNode(lineno,NODE_STMT);
         node->stype=STMT_SCANF;
         node->addChild($3);
+        
         node->addChild($5);
+        cout<<"add str"<<endl;
+        $$=node;
+}
+|SCANF LPAREN expr COMMA IDADDR RPAREN SEMICOLON{
+        TreeNode *node=new TreeNode(lineno,NODE_STMT);
+        node->stype=STMT_SCANF;
+        node->addChild($3);
+        
+        node->addChild($5);
+        cout<<"add str"<<endl;
+        $$=node;
+}
+| SCANF LPAREN expr RPAREN SEMICOLON{
+        TreeNode *node=new TreeNode(lineno,NODE_STMT);
+        node->stype=STMT_SCANF;
+        node->addChild($3);
         $$=node;
 }
 ;
@@ -266,18 +291,6 @@ for
 }
 ;
 
-function
-: T MAIN LPAREN RPAREN statement{
-        TreeNode*node = new TreeNode($2->lineno,NODE_FUNC);
-        cout<<"function initial successfully"<<endl;
-        //此处的处理有些不妥当,TYPE_VOID 和 node -> ftype = FUNC_VOID 是否冗余
-        node->ftype = FUNC_VOID;
-        node->addChild($1);
-        node->addChild($2);
-        node->addChild($4);
-        $$=node;
-}
-;
 // TODO remove add main to the IDtable so main should be a ID and set a flag to
 //      make sure that there is only one main
 
@@ -440,7 +453,7 @@ T
 |   T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
 |   T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
 |   T_STRING {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_STRING;}
-|   T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_VOID;}
+|   T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_VOID;cout<<$$->type->getTypeInfo()<<endl;}
 ;
 
 %%
