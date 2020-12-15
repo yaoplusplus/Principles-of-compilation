@@ -7,6 +7,7 @@
     int yyerror( char const * );
     extern int layernum;
     vector<layer*> layers(1,new layer()); //layer array
+    int for_stmt_flag = 0;
 %}
 %token IF ELSE WHILE FOR PRINTF SCANF TRUE FALSE
 %token T_CHAR T_INT T_STRING T_BOOL T_VOID
@@ -282,6 +283,7 @@ scanf //TODO bug
  // expr 后面时候加分号也要具体到位置
 for //expr - SELFADD
 : FOR LPAREN declaration bool_expr SEMICOLON expr RPAREN statement{
+        for_stmt_flag = 1; //设置标识位置.
         //cout<<"?"<<endl;
         TreeNode *node=new TreeNode(lineno,NODE_STMT);
         node->stype=STMT_FOR;
@@ -290,6 +292,7 @@ for //expr - SELFADD
         node->addChild($6);
         node->addChild($8);
         $$=node;
+        for_stmt_flag = 0;
 }
 ;
 
