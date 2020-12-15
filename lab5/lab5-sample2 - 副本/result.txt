@@ -1,24 +1,100 @@
-void
-success
-??
-???
-?
-lno@0	@10 program children: [3 9  ]
-lno@1	@3 statement children: [0 1 2  ] stmt:decl
-lno@1	@0 type type:int
-lno@1	@1 variable varname: a
-lno@1	@2 const type: 1
-lno@2	@9 statement children: [4 8  ] stmt:decl
-lno@2	@4 type type:void
-lno@2	@8 statement children: [5 6 7  ] stmt:decl
-lno@2	@5 type type:int
-lno@2	@6 variable varname: a
-lno@2	@7 const type: 1
+lno@0	@79 program children: [78  ]
+lno@1	@78 statement children: [0 4 7 10 13 16 18 77  ] stmt:decl
+lno@1	@0 type type:void
+lno@2	@4 statement children: [1 2 3  ] stmt:decl
+lno@2	@1 type type:int
+lno@2	@2 variable varname: a
+lno@2	@3 variable varname: s
+lno@3	@7 statement children: [5 6  ] stmt:assign
+lno@3	@5 variable varname: a
+lno@3	@6 const t ype: 10
+lno@4	@10 statement children: [8 9  ] stmt:assign
+lno@4	@8 variable varname: s
+lno@4	@9 const type: 0
+lno@5	@13 statement children: [11 12  ] stmt:decl
+lno@5	@11 type type:char
+lno@5	@12 variable varname: ch
+lno@6	@16 statement children: [14 15  ] stmt:scanf
+lno@6	@14 const type: "\%d"
+lno@6	@15 variable varname: &ch
+lno@7	@18 statement children: [17  ] stmt:scanf
+lno@7	@17 variable varname: ch
+lno@21	@77 statement children: [36 39 42 45 48 76  ] stmt:while
+lno@8	@36 expression children: [25 35  ] expr:?
+lno@8	@25 expression children: [21 24  ] expr:?
+lno@8	@21 expression children: [19 20  ] expr:?
+lno@8	@19 variable varname: a
+lno@8	@20 const type: 0
+lno@8	@24 expression children: [22 23  ] expr:?
+lno@8	@22 variable varname: a
+lno@8	@23 const type: 10
+lno@8	@35 expression children: [30 34  ] expr:?
+lno@8	@30 expression children: [28 29  ] expr:bool_eq
+lno@8	@28 expression children: [26 27  ] expr:?
+lno@8	@26 variable varname: a
+lno@8	@27 const type: 100
+lno@8	@29 const type: 10
+lno@8	@34 expression children: [32 33  ] expr:bool_eq
+lno@8	@32 expression children: [31  ] expr:?
+lno@8	@31 variable varname: a
+lno@8	@33 const type: 10
+lno@9	@39 statement children: [37 38  ] stmt:assign
+lno@9	@37 variable varname: a
+lno@9	@38 const type: 1
+lno@10	@42 statement children: [40 41  ] stmt:decl
+lno@10	@40 type type:int
+lno@10	@41 variable varname: a
+lno@11	@45 statement children: [43 44  ] stmt:assign
+lno@11	@43 variable varname: a
+lno@11	@44 const type: 10
+lno@12	@48 statement children: [46 47  ] stmt:assign
+lno@12	@46 variable varname: s
+lno@12	@47 variable varname: a
+lno@21	@76 statement children: [53 56 59 62 75  ] stmt:if
+lno@13	@53 expression children: [50 52  ] expr:?
+lno@12	@50 expression children: [49  ] expr:?
+lno@13	@49 variable varname: s
+lno@13	@52 expression children: [51  ] expr:?
+lno@13	@51 const type: 10
+lno@14	@56 statement children: [54 55  ] stmt:printf
+lno@14	@54 const type: "result is: %d\n"
+lno@14	@55 variable varname: s
+lno@15	@59 statement children: [57 58  ] stmt:decl
+lno@15	@57 type type:int
+lno@15	@58 variable varname: b
+lno@16	@62 statement children: [60 61  ] stmt:assign
+lno@16	@60 variable varname: b
+lno@16	@61 const type: 10
+lno@19	@75 statement children: [66 69 70 74  ] stmt:?
+lno@17	@66 statement children: [63 64 65  ] stmt:decl
+lno@17	@63 type type:int
+lno@17	@64 variable varname: i
+lno@17	@65 const type: 0
+lno@17	@69 expression children: [67 68  ] expr:?
+lno@17	@67 variable varname: i
+lno@17	@68 variable varname: b
+lno@17	@70 variable varname: i
+lno@18	@74 statement children: [72 73  ] stmt:printf
+lno@18	@72 const type: "Have fun: %d\n"
+lno@18	@73 variable varname: i
 ---------------------------------------------------
-the num of the layers: 2
-layernum: 0 addr: 0x7fffcd8cb140
- var: a type: int value: 1
+the num of the layers: 5
+layernum: 0
 
-layernum: 1 addr: 0x7fffcd8d1980
- var: a type: int value: 1
+layernum: 1
+
+int       a         10        
+int       s         0         
+char      ch        0         
+
+layernum: 2
+
+int       a         10        
+
+layernum: 3
+
+int       b         10        
+int       i         0         
+
+layernum: 4
 

@@ -36,7 +36,6 @@ DQUOTATION \"
 "void" return T_VOID;
 
 "main" {
-    cout<<"success"<<endl;
     return MAIN;}
 "if" return IF;
 "while" return WHILE;

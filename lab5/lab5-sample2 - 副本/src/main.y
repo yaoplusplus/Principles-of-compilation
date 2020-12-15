@@ -43,22 +43,14 @@ statement
 :   SEMICOLON  {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}//分号-STMT_SKIP
 |   declaration {$$ = $1;}
 |   assign SEMICOLON {$$ = $1;}
-|   LBRACE statements RBRACE {$$ = $2; cout << "??" << endl;}
+|   LBRACE statements RBRACE {$$ = $2;}
 |   LBRACE RBRACE {$$ = new TreeNode(lineno, NODE_STMT); $$->stype = STMT_SKIP;}
-|   expr SEMICOLON {$$ = $1;}
+|   expr SEMICOLON {$$ = $1;} //
 |   if_else {$$ = $1;}
 |   while {$$ = $1;}
-|   scanf SEMICOLON {$$ = $1;}
+|   scanf SEMICOLON{$$ = $1;}
 |   printf SEMICOLON{$$ = $1;}
 |   for {$$ = $1;}
-| T MAIN LPAREN RPAREN statement {
-        
-        TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
-        node->stype = STMT_DECL;
-        node->addChild($1);
-        node->addChild($5);
-        $$ = node;
-}
 ;
 
 declaration
@@ -156,6 +148,13 @@ declaration
         }
         $$ = node;   
 } // 函数声明
+| T MAIN LPAREN RPAREN statement { //TODO bug
+        TreeNode* node = new TreeNode($1->lineno,NODE_STMT);
+        node->stype = STMT_DECL;
+        node->addChild($1);
+        node->addChild($5);
+        $$ = node;
+}
 ;
 
 IDENTIFIERLIST
@@ -252,41 +251,44 @@ printf
 }
 ;
 
-scanf
-: SCANF LPAREN expr COMMA expr RPAREN SEMICOLON{
+scanf //TODO bug
+: SCANF LPAREN expr COMMA expr RPAREN{
+        // cout<<"2 arg1"<<endl;
         TreeNode *node=new TreeNode(lineno,NODE_STMT);
         node->stype=STMT_SCANF;
         node->addChild($3);
-        
         node->addChild($5);
-        cout<<"add str"<<endl;
         $$=node;
 }
-|SCANF LPAREN expr COMMA IDADDR RPAREN SEMICOLON{
+|SCANF LPAREN expr COMMA IDADDR RPAREN{
+        // cout<<"2 arg2"<<endl;
         TreeNode *node=new TreeNode(lineno,NODE_STMT);
         node->stype=STMT_SCANF;
         node->addChild($3);
-        
         node->addChild($5);
-        cout<<"add str"<<endl;
         $$=node;
 }
-| SCANF LPAREN expr RPAREN SEMICOLON{
+| SCANF LPAREN expr RPAREN{
         TreeNode *node=new TreeNode(lineno,NODE_STMT);
+        // cout<<"one arg"<<endl;
         node->stype=STMT_SCANF;
+        // cout<<"one arg"<<endl;
         node->addChild($3);
+        // cout<<"one arg"<<endl;
         $$=node;
+        
 }
 ;
-//
-for
-: FOR LPAREN declaration SEMICOLON bool_expr SEMICOLON expr RPAREN statement{
+ // expr 后面时候加分号也要具体到位置
+for //expr - SELFADD
+: FOR LPAREN declaration bool_expr SEMICOLON expr RPAREN statement{
+        //cout<<"?"<<endl;
         TreeNode *node=new TreeNode(lineno,NODE_STMT);
         node->stype=STMT_FOR;
         node->addChild($3);
-        node->addChild($5);
-        node->addChild($7);
-        node->addChild($9);
+        node->addChild($4);
+        node->addChild($6);
+        node->addChild($8);
         $$=node;
 }
 ;
@@ -453,7 +455,7 @@ T
 |   T_CHAR {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_CHAR;}
 |   T_BOOL {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_BOOL;}
 |   T_STRING {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_STRING;}
-|   T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_VOID;cout<<$$->type->getTypeInfo()<<endl;}
+|   T_VOID {$$ = new TreeNode(lineno, NODE_TYPE); $$->type = TYPE_VOID;}
 ;
 
 %%

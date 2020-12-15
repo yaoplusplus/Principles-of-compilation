@@ -27,29 +27,34 @@ int main(int argc, char *argv[])
         root->printAST();
     }
     cout<<"---------------------------------------------------"<<endl;
-
-     cout<<"the num of the layers: "<<layers.size()<<endl;
-    for(int i=0;i<layers.size() &&layers[i]->vars.size()!=0;i++){
-        cout<<"layernum: "<<i<<" addr: "<<layers[i];
-        if(layers[i]->vars.size()!=0)
-        cout<<endl;
-            for(int j=0;j<layers[i]->vars.size();j++){
-                cout<<" var: "<<layers[i]->vars[j]->var_name;
-                if(layers[i]->vars[j]->type->type == VALUE_INT){
-                    cout<<" type: int value: "<<layers[i]->vars[j]->int_val;
-                }
-                else if(layers[i]->vars[j]->type->type == VALUE_CHAR){
-                    cout<<" type: char value: "<<layers[i]->vars[j]->ch_val;
-                }
-                else if(layers[i]->vars[j]->type->type == VALUE_STRING){
-                    cout<<" type: string value: "<<layers[i]->vars[j]->str_val;
-                }
-                else if(layers[i]->vars[j]->type->type == VALUE_BOOL){
-                    cout<<" type: bool value: "<<layers[i]->vars[j]->b_val;
-                }
-                cout<<endl;
+// print the IDtable
+    cout<<"the num of the layers: "<<layers.size()<<endl;
+    for(int i=0; i<layers.size(); i++){
+        cout<<"layernum: "<<i<<endl;
+        if(layers[i]->vars.size()!=0){
+            cout<<endl;
+        }
+        for(int j=0;j<layers[i]->vars.size();j++){
+            if(layers[i]->vars[j]->type->type == VALUE_INT){
+                cout<<left<<setw(10)<<"int"<<setw(10)<<layers[i]->vars[j]->var_name;
+                cout<<left<<setw(10)<<layers[i]->vars[j]->int_val;
             }
-        cout<<endl;
+            else if(layers[i]->vars[j]->type->type == VALUE_CHAR){
+                cout<<left<<setw(10)<<"char"<<setw(10)<<layers[i]->vars[j]->var_name;
+                cout<<left<<setw(10)<<layers[i]->vars[j]->int_val;
+            }
+            else if(layers[i]->vars[j]->type->type == VALUE_STRING){
+                cout<<left<<setw(10)<<"string"<<setw(10)<<layers[i]->vars[j]->var_name;
+                cout<<left<<setw(10)<<layers[i]->vars[j]->int_val;
+            }
+            else if(layers[i]->vars[j]->type->type == VALUE_BOOL){
+                cout<<left<<setw(10)<<"bool"<<setw(10)<<layers[i]->vars[j]->var_name;
+                cout<<left<<setw(10)<<layers[i]->vars[j]->int_val;
+            }
+            cout<<endl;
+        }
+    cout<<endl;
     }
+    
     return 0;
 }
