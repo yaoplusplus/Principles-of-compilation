@@ -32,7 +32,11 @@ TreeNode::TreeNode() {
 }
 
 void TreeNode::genNodeId() {//按行遍历
-
+    // if (this == nullptr)
+    //     return;
+    // this->printNodeInfo();
+    // this->child->printAST();
+    // this->sibling->printAST();
 }
 
 void TreeNode::printNodeInfo() {
@@ -178,6 +182,9 @@ string TreeNode::sType2String(StmtType type) {
     case STMT_PRINTF:
         return "printf";
         break;
+    case STMT_FOR:
+        return "for";
+        break;
     default:
         break;
     }
@@ -225,7 +232,34 @@ string TreeNode::opType2String(OperatorType type) {
         break;
     case OP_EQ:
         return "bool_eq";
-        break;  
+        break;
+    case OP_UMINUS:
+        return "uminus";
+        break;
+    case OP_MOD:
+        return "mod";
+        break;
+    case OP_TAKEADDR:
+        return "take_addr";
+        break;
+    case OP_SELFADD:
+        return "selfadd";
+        break;
+    case OP_SELFMIN:
+        return "selfmin";
+        break;
+    case OP_LOG_AND:
+        return "log_and";
+        break;
+    case OP_LOG_OR:
+        return "log_or";
+        break;
+    case OP_COMP:
+        return "comp";
+        break;
+    case OP_NOT:
+        return "not";
+        break;
     default:
         return"?";
         break;
