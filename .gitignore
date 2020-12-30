@@ -1,0 +1,7 @@
+test.cpp
+*.log
+test/*/*.out
+test/*/*.output
+test/*/*.res
+test/*/*.sy
+test/*/*.s
