@@ -62,53 +62,71 @@ declaration
         node->addChild($2);
         node->addChild($4);
         layer* curlayer = layers[layernum];
-        if(curlayer->vars.size()==0){
-        curlayer->vars.push_back(new variable());
-        curlayer->vars[0]->var_name = $2->var_name;
-        curlayer->vars[0]->type = $1->type;
-        // cout<< $1->type->type <<endl; $1->type->type = 1 (VALUE_INT)
+
+        if(curlayer->lvars.size()==0){//第一次加入变量
+        curlayer->lvars.push_back(new variables());//增加一个变量域
+        variables* curlvars = curlayer->lvars[0];
+        curlvars->vars.push_back(new variable());
+        variable* curvar = curlvars->vars[0];
+        curvar->type = $1->type;
+        curvar->var_name = $2->var_name;
+        
         if($1->type->type == VALUE_INT){
                 //cout<<"it's int"<<endl;
-                curlayer->vars[0]->int_val = $4->int_val;
+                curvar->int_val = $4->int_val;
                 //cout<< curlayer->vars[0]->int_val<<endl;
                 }
         else if($1->type->type == VALUE_CHAR){
-                curlayer->vars[0]->ch_val = $4->ch_val;
+                curvar->ch_val = $4->ch_val;
                 }
         else if($1->type->type == VALUE_STRING){
-                curlayer->vars[0]->str_val = $4->str_val;
+                curvar->str_val = $4->str_val;
                 }
         else if($1->type->type == VALUE_BOOL){
-                curlayer->vars[0]->b_val = $4->b_val;
+                curvar->b_val = $4->b_val;
                 }      
         }
     else{
-        int size = curlayer->vars.size();
-        int preflag = 0;
-        for(int i=0; i<size; i++){
-            if(curlayer->vars[i]->var_name == $2->var_name){
-                preflag = 1;
-                cout<<"IDENTIFIER "<< $2->var_name <<" is still declared"<<endl;
-            }
+        int lvars_size = curlayer->lvars.size();
+        if(!lvars_size){//如果当前层暂无lvars
+                curlayer->lvars.push_back(new variables());
+        }
+        //当前变量所处的本层作用域
+        variables *curlvars = curlayer->lvars[lvars_size-1];
+        //当前变量群，之间不可访问
+        int vars_size = curlvars->vars.size();
+        int preflag = 0;//判断是否重复声明
+        //遍历较低层所有变量群
+
+        for(int i=0; i<=layernum; i++){
+                int lvars_size = layers[i]->lvars.size();
+                for(int j=0; j<lvars_size; j++){
+                        int vars_size = layers[i]->lvars[j]->vars.size();
+                        for(int k=0; k<vars_size; k++){
+                                if(layers[i]->lvars[j]->vars[k]->var_name == $2->var_name){
+                                        preflag = 1;
+                                }
+                        }
+                }
         }
         if(preflag!=1){
-            curlayer->vars.push_back(new variable());
-            curlayer->vars.back()->var_name = $2->var_name;
-            curlayer->vars.back()->type = $1->type;
-            if($1->type->type == VALUE_INT){
+                
+                curlvars->vars.push_back(new variable($1->type,$2->var_name));
+                variable *curvar = curlvars->vars[vars_size];
+                if($1->type->type == VALUE_INT){
                 //cout<<"it's int"<<endl;
-                curlayer->vars.back()->int_val = $4->int_val;
+                curvar->int_val = $4->int_val;
                 //cout<< curlayer->vars.back()->int_val<<endl;
                 }
-        else if($1->type->type == VALUE_CHAR){
-                curlayer->vars.back()->ch_val = $4->ch_val;
+                else if($1->type->type == VALUE_CHAR){
+                curvar->ch_val = $4->ch_val;
                 }
-        else if($1->type->type == VALUE_STRING){
-                curlayer->vars.back()->str_val = $4->str_val;
+                else if($1->type->type == VALUE_STRING){
+                curvar->str_val = $4->str_val;
                 }
-        else if($1->type->type == VALUE_BOOL){
+                else if($1->type->type == VALUE_BOOL){
                 cout<<"it's bool"<<endl;
-                curlayer->vars.back()->b_val = $4->b_val;
+                curvar->b_val = $4->b_val;
                 }
         }
     }
@@ -125,24 +143,41 @@ declaration
         while(curid != nullptr){
                 
                 layer* curlayer = layers[layernum];
-                if(curlayer->vars.size()==0){
-                        curlayer->vars.push_back(new variable());
-                        curlayer->vars[0]->var_name = curid->var_name;
-                        curlayer->vars[0]->type = $1->type;
+                if(curlayer->lvars.size()==0){
+                        // curlayer->vars.push_back(new variable());
+                        // curlayer->vars[0]->var_name = curid->var_name;
+                        // curlayer->vars[0]->type = $1->type;
+                        curlayer->lvars.push_back(new variables());//增加一个变量域
+                        variables* curlvars = curlayer->lvars[0];
+                        curlvars->vars.push_back(new variable());
+                        variable* curvar = curlvars->vars[0];
+                        curvar->type = $1->type;
+                        curvar->var_name = curid->var_name;
                 }
                 else{
-                        int size = curlayer->vars.size();
-                        int preflag = 0;
-                        for(int i=0; i<size; i++){
-                                if(curlayer->vars[i]->var_name == curid->var_name){
-                                        preflag = 1;
-                                        cout<<"IDENTIFIER "<< $2->var_name <<" is still declared"<<endl; 
+                        int lvars_size = curlayer->lvars.size();
+                        if(!lvars_size){//如果当前层lvars是空的
+                                curlayer->lvars.push_back(new variables());
+                        }
+                        //当前变量所处的本层作用域
+                        variables *curlvars = curlayer->lvars[lvars_size-1];
+                        //当前变量群，之间不可访问
+                        int vars_size = curlvars->vars.size();
+                        int preflag = 0;//判断是否重复声明
+                        //遍历较低层所有变量群
+                        for(int i=0; i<=layernum; i++){
+                                int lvars_size = layers[i]->lvars.size();
+                                for(int j=0; j<lvars_size; j++){
+                                        int vars_size = layers[i]->lvars[j]->vars.size();
+                                        for(int k=0; k<vars_size; k++){
+                                                if(layers[i]->lvars[j]->vars[k]->var_name == curid->var_name){
+                                                        preflag = 1;
+                                                }
+                                        }
                                 }
                         }
                         if(preflag!=1){
-                                curlayer->vars.push_back(new variable());
-                                curlayer->vars.back()->var_name = curid->var_name;
-                                curlayer->vars.back()->type = $1->type;
+                               curlvars->vars.push_back(new variable($1->type,$2->var_name));
                         }
                 }
                 curid = curid->sibling;
@@ -163,7 +198,7 @@ IDENTIFIERLIST
 |   IDENTIFIERLIST COMMA IDENTIFIER {$$ = $1; $$->addSibling($3);}
 ;
 
-assign //TODO assign 查找ID时不能只看当前层,需要进一步改进(优先看本层)
+assign //TODO assign 查找ID时 修改为新符号表
 :   IDENTIFIER LOP_ASSIGN expr {//update the IDTABLE
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_ASSIGN;
