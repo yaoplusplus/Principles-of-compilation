@@ -49,15 +49,47 @@ variables(){
 };
 struct layer{
     public:
-    vector<variables*> lvars;//每一个layer有一个var数组: 按顺序增加的
-    //实际上,每一个layer应该有多个var数组
-    //尝试修改这个bug,失败使用github desktop回溯版本到 'before debug'
-    //两种方案:
-    //1.将variable修改为数组,而不是单个元素.每一层有一个变量二维数组,每次进入
-    //一个层级,都将符号放在一个新的var数组里(layers[i][i]).
-    //2.将layers修改为二维数组.
-    //一个layer下一个vars向量，每一个vars都有一堆variable
+    vector<variables*> lvars;
     layer(){
         // lvars.push_back(new variables());
     };
+    void printlayer(){
+        int lvars_size = lvars.size();
+        // cout<<"total lvars num: "<<lvars_size<<endl;
+    for(int i=0;i<lvars_size;i++){
+            if(lvars[i]->vars.size()!=0){
+                cout<<"current lvar: "<<i+1<<endl;
+                int vars_size = lvars[i]->vars.size();
+                for(int j=0;j<vars_size;j++){
+                    variable* curvar = this->lvars[i]->vars[j];
+                    switch(curvar->type->type){
+
+                        case VALUE_STRING:
+                            cout<<setw(10)<<left<<"string"<<setw(10)<<curvar->var_name
+                            <<setw(10)<<curvar->str_val<<endl;
+                            break;
+
+                        case VALUE_INT:
+                            cout<<setw(10)<<left<<"int"<<setw(10)<<curvar->var_name
+                            <<setw(10)<<curvar->int_val<<endl;
+                            break;
+
+                        case VALUE_CHAR:
+                            cout<<setw(10)<<left<<"char"<<setw(10)<<curvar->var_name
+                            <<setw(10)<<curvar->ch_val<<endl;
+                            break;
+                    
+                        case VALUE_BOOL:
+                            cout<<setw(10)<<left<<"bool"<<setw(10)<<curvar->var_name
+                            <<setw(10)<<curvar->b_val<<endl;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                cout<<endl;
+            }
+    }
+    cout<<"-------------------------------------";
+    }
 };

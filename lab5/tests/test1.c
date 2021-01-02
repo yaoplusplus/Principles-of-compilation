@@ -4,6 +4,7 @@ a = 10;
 s = 0;
 char ch;
 scanf("\%d", &ch);
+scanf(ch);
 while(a>0 && a<=10 || a%100==10 && !a==10) {
 a -= 1;
 int a;
@@ -18,4 +19,5 @@ printf("Have fun: %d\n", i);
 }
 }
 }
+
 }

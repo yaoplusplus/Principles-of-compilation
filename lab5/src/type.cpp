@@ -22,3 +22,25 @@ string Type::getTypeInfo() {
     }
     return "?";
 }
+string printtype(Type* type){
+    switch(type->type){
+        case VALUE_INT:
+            cout<<"int";
+            break;
+        case VALUE_CHAR:
+            cout<<"char";
+            break;
+        case VALUE_BOOL:
+            cout<<"bool";
+            break;  
+        case VALUE_STRING:
+            cout<<"string";
+            break;
+        case VALUE_VOID:
+            cout<<"void";
+            break;
+        default:
+            cout<<"?";
+            break;    
+        }
+}

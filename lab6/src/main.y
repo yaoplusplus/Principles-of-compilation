@@ -309,6 +309,7 @@ expr
         int size = layers[layernum]->vars.size();
         for(int i = 0; i < size; i++){
                 if(curlayer->vars[i]->var_name == $1->var_name){
+                        //显然是不完善的，类型限定在了int
                         $1->int_val = curlayer->vars[i]->int_val;
                 }
         }

@@ -1,6 +1,6 @@
 #include "common.h"
 #include <fstream>
-
+extern int layercount; 
 extern TreeNode *root;
 extern FILE *yyin;
 extern int yyparse();
@@ -27,34 +27,23 @@ int main(int argc, char *argv[])
         root->printAST();
     }
     cout<<"---------------------------------------------------"<<endl;
-// print the IDtable
-    // cout<<"the num of the layers: "<<layers.size()<<endl;
-    // for(int i=0; i<layers.size(); i++){
-    //     cout<<"layernum: "<<i<<endl;
-    //     if(layers[i]->vars.size()!=0){
-    //         cout<<endl;
-    //     }
-    //     for(int j=0;j<layers[i]->vars.size();j++){
-    //         if(layers[i]->vars[j]->type->type == VALUE_INT){
-    //             cout<<left<<setw(10)<<"int"<<setw(10)<<layers[i]->vars[j]->var_name;
-    //             cout<<left<<setw(10)<<layers[i]->vars[j]->int_val;
-    //         }
-    //         else if(layers[i]->vars[j]->type->type == VALUE_CHAR){
-    //             cout<<left<<setw(10)<<"char"<<setw(10)<<layers[i]->vars[j]->var_name;
-    //             cout<<left<<setw(10)<<layers[i]->vars[j]->int_val;
-    //         }
-    //         else if(layers[i]->vars[j]->type->type == VALUE_STRING){
-    //             cout<<left<<setw(10)<<"string"<<setw(10)<<layers[i]->vars[j]->var_name;
-    //             cout<<left<<setw(10)<<layers[i]->vars[j]->int_val;
-    //         }
-    //         else if(layers[i]->vars[j]->type->type == VALUE_BOOL){
-    //             cout<<left<<setw(10)<<"bool"<<setw(10)<<layers[i]->vars[j]->var_name;
-    //             cout<<left<<setw(10)<<layers[i]->vars[j]->int_val;
-    //         }
-    //         cout<<endl;
-    // }
-    // cout<<endl;
-    // }
+    // 输出符号表有效层
+    cout<<"layers size:"<<layers.size()<<endl;
     
+    for(int i=0; i<layers.size(); i++){
+        if(layers[i]->lvars.size()!=0){
+            layercount++;
+        }
+    }
+
+    cout<<"total layers with value: "<<layercount<<endl;
+    cout<<"-------------------------------------";
+    for(int i=0; i<layers.size(); i++){
+        
+        if(layers[i]->lvars.size()!=0){
+            cout<<"\nlayer: "<<i+1<<"\n";
+            layers[i]->printlayer();
+        }
+    }
     return 0;
 }

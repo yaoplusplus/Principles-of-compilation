@@ -7,3 +7,10 @@ test/*/*.sy
 test/*/*.s
 *.tab.cpp
 main
+result.txt
+*.yy.cpp
+*.output
+*.tab.*
+*.gch
+test.c
+test1.c

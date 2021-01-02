@@ -198,32 +198,104 @@ IDENTIFIERLIST
 |   IDENTIFIERLIST COMMA IDENTIFIER {$$ = $1; $$->addSibling($3);}
 ;
 
-assign //TODO assign 查找ID时 修改为新符号表
+assign //TODO assign 
 :   IDENTIFIER LOP_ASSIGN expr {//update the IDTABLE
+        cout<<"in the assign"<<endl;
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_ASSIGN;
         node->addChild($1);
         node->addChild($3);
-        //搜索ID 在当前层符号表中
+        //当前层
         layer* curlayer = layers[layernum];
-        int size = curlayer->vars.size();
-        //遍历当前层变量
-        for(int i=0; i<size; i++){
-                if(curlayer->vars[i]->var_name == $1->var_name){
-                                if(curlayer->vars[i]->type->type == VALUE_INT){
-                                curlayer->vars[i]->int_val = $3->int_val;
-                                }
-                                else if(curlayer->vars[i]->type->type == VALUE_CHAR){
-                                curlayer->vars[i]->ch_val = $3->ch_val;
-                                }
-                                else if(curlayer->vars[i]->type->type == VALUE_STRING){
-                                curlayer->vars[i]->str_val = $3->str_val;
-                                }
-                                else if(curlayer->vars[i]->type->type == VALUE_BOOL){
-                                curlayer->vars[i]->b_val = $3->b_val;
-                                }
+        cout<<"curlayer "<<layernum+1<<endl;
+        //当前层一共几个变量集合
+        int lvars_size = curlayer->lvars.size();
+        cout<<"curlayer->lvars.size "<<lvars_size<<endl;
+        if(lvars_size == 0){
+               
+                goto search_lower_layer;
+        }
+        //遍历当前lvars
+        else{
+                variables*curlvars = curlayer->lvars[lvars_size-1];
+                int vars_size = curlvars->vars.size();
+                if(vars_size){
+                        cout<<"assign_var_name "<<$1->var_name<<endl;
+                        for(int i=0; i<vars_size; i++){
+                                cout<<curlvars->vars[i]->var_name<<endl;
+                                // && $1->type->type == curlvars->vars[i]->type->type
+                                if($1->var_name == curlvars->vars[i]->var_name){
+                                        ValueType temptype = $3->type->type;
+                                        if(curlvars->vars[i]->type->type == temptype){
+                                                if(temptype == VALUE_INT){
+                                                        curlvars->vars[i]->int_val = $3->int_val;
+                                                }
+                                                else if(temptype == VALUE_CHAR){
+                                                        curlvars->vars[i]->ch_val = $3->ch_val;
+                                                }
+                                                else if(temptype == VALUE_STRING){
+                                                        curlvars->vars[i]->str_val = $3->str_val;
+                                                }
+                                                else if(temptype == VALUE_BOOL){
+                                                        curlvars->vars[i]->b_val = $3->b_val;
+                                                }
+                                                else{}
+                                                goto    Over;
+                                        }
+                                        else{
+                                                cout<<"can't convert"<<endl;
+                                                goto    Over;
+                                        }
+                                }         
                         }
+                }
+        }
+                //遍历较低层
+search_lower_layer:
+        cout<<"search_lower_layer"<<endl;
+        for(int i=0;i<layernum;i++){
+                cout<<"i "<<i<<endl;
+                int lvars_size = layers[i]->lvars.size();
+                if(lvars_size!=0)
+                for(int j=0; j<=lvars_size; j++){
+                        int vars_size = layers[i]->lvars[j]->vars.size();
+                        if(vars_size)
+                        for(int k=0; k<vars_size; k++){
+                                
+                                variable* curvar = layers[i]->lvars[j]->vars[k];
+                                cout<<curvar->var_name<<endl; //么进来
+                              if(curvar->var_name == $1->var_name){
+                                      cout<<"get it!"<<endl;
+                                      ValueType temptype = $3->type->type;
+                                //       if($3->type->type == VALUE_STRING)
+                                //       cout<<"ok"<<endl;
+                                      // 检查赋值语句的合法性
+                                      if(curvar->type->type == temptype){
+                                                cout<<"get it!"<<endl;
+                                                if(temptype == VALUE_INT){
+                                                        curvar->int_val = $3->int_val;
+                                                }
+                                                else if(temptype == VALUE_CHAR){
+                                                        curvar->ch_val = $3->ch_val;
+                                                }
+                                                else if(temptype == VALUE_STRING){
+                                                        curvar->str_val = $3->str_val;
+                                                }
+                                                else if(temptype == VALUE_BOOL){
+                                                        curvar->b_val = $3->b_val;
+                                                }
+                                                goto Over;
+                                        }
+                                        else{
+                                                cout<<"can't convert"<<endl;
+                                                goto Over;
+                                        }
+                                }  
                         }
+
+                }
+        }
+Over:
         $$ = node;
 }
 |   IDENTIFIER MINASSIGN expr {
@@ -339,14 +411,26 @@ bool_statment
 ;
 expr
 :   IDENTIFIER {
-        //expr -> IDENTIFIER 时未查找符号表,实现一个查找
-        layer* curlayer = layers[layernum];
-        int size = layers[layernum]->vars.size();
-        for(int i = 0; i < size; i++){
-                if(curlayer->vars[i]->var_name == $1->var_name){
-                        $1->int_val = curlayer->vars[i]->int_val;
-                }
-        }
+        // //expr -> IDENTIFIER 时未查找符号表,实现一个查找
+        // layer* curlayer = layers[layernum];
+        // int lvars_size = curlayer->lvars.size();
+        // // if(lvars_size == 0){
+        // //         printf("line %s,the ID %s hasn't be defined\n",lineno,$1->var_name);
+        // // }
+        // //遍历当前层以及较低层
+        // for(int i=0;i++;i<layernum){
+        //         int lvars_size = layers[i]->lvars.size();
+
+        //         for(int j=0;j++;j<=lvars_size){
+        //                 int vars_size = layers[i]->lvars[j]->vars.size();
+        //                 for(int k=0;k++;k<vars_size){
+        //                       if(layers[i]->lvars[j]->vars[k]->var_name == $1->var_name){
+        //                               $1->int_val = layers[i]->lvars[j]->vars[k]->int_val;
+        //                         }  
+        //                 }
+
+        //         }
+        // }
         $$ = $1;
 }
 |   INTEGER {

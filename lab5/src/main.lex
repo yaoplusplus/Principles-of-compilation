@@ -6,6 +6,7 @@
 
 extern vector<layer*> layers;
 int layernum = 0;
+int layercount = 0;
 int lineno=1;
 %}
 
@@ -74,8 +75,14 @@ DQUOTATION \"
 
 {LBRACE} {
     //每次遇到一个层级加一 就初始化一个层级
-    layers.push_back(new layer());
     layernum++;
+
+    if(layernum >= layers.size())
+    layers.push_back(new layer());
+    // else标志第二次进入这一层, variables应该放在一个新的lvars里面。 
+    else{
+        layers[layernum]->lvars.push_back(new variables());
+    }
     // cout<<setw(5)<<left<<"in"<<"{, layernum++, layernum = "<<layernum<<endl;
     return LBRACE;
 }
@@ -125,7 +132,7 @@ DQUOTATION \"
     yylval = node;
     return FALSE;
 }
-{IDENTIFIER} {//需要另起炉灶
+{IDENTIFIER} {
     TreeNode* node = new TreeNode(lineno, NODE_VAR);
     node->var_name = string(yytext);
     yylval = node;
