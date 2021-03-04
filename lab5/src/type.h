@@ -42,5 +42,5 @@ static Type* TYPE_STRING = new Type(VALUE_STRING);
 static Type* TYPE_VOID = new Type(VALUE_VOID);
 
 int getSize(Type* type);
-string printtype(Type* type);
+string type2str(Type* type);
 #endif

@@ -33,7 +33,10 @@
 %%
 
 program
-:   statements {root = new TreeNode(0, NODE_PROG); root->addChild($1);};
+:   statements {root = new TreeNode(0, NODE_PROG); root->addChild($1);
+    printf("\n\t.text\n\t.section\t.rodata\n");
+    
+};
 
 statements
 :   statement {$$=$1;}
@@ -200,17 +203,17 @@ IDENTIFIERLIST
 
 assign //TODO assign 
 :   IDENTIFIER LOP_ASSIGN expr {//update the IDTABLE
-        cout<<"in the assign"<<endl;
+        // cout<<"in the assign"<<endl;
         TreeNode* node = new TreeNode($1->lineno, NODE_STMT);
         node->stype = STMT_ASSIGN;
         node->addChild($1);
         node->addChild($3);
         //当前层
         layer* curlayer = layers[layernum];
-        cout<<"curlayer "<<layernum+1<<endl;
+        // cout<<"curlayer "<<layernum+1<<endl;
         //当前层一共几个变量集合
         int lvars_size = curlayer->lvars.size();
-        cout<<"curlayer->lvars.size "<<lvars_size<<endl;
+        // cout<<"curlayer->lvars.size "<<lvars_size<<endl;
         if(lvars_size == 0){
                
                 goto search_lower_layer;
@@ -220,9 +223,9 @@ assign //TODO assign
                 variables*curlvars = curlayer->lvars[lvars_size-1];
                 int vars_size = curlvars->vars.size();
                 if(vars_size){
-                        cout<<"assign_var_name "<<$1->var_name<<endl;
+                        // cout<<"assign_var_name "<<$1->var_name<<endl;
                         for(int i=0; i<vars_size; i++){
-                                cout<<curlvars->vars[i]->var_name<<endl;
+                                // cout<<curlvars->vars[i]->var_name<<endl;
                                 // && $1->type->type == curlvars->vars[i]->type->type
                                 if($1->var_name == curlvars->vars[i]->var_name){
                                         ValueType temptype = $3->type->type;
@@ -252,9 +255,9 @@ assign //TODO assign
         }
                 //遍历较低层
 search_lower_layer:
-        cout<<"search_lower_layer"<<endl;
+        // cout<<"search_lower_layer"<<endl;
         for(int i=0;i<layernum;i++){
-                cout<<"i "<<i<<endl;
+                // cout<<"i "<<i<<endl;
                 int lvars_size = layers[i]->lvars.size();
                 if(lvars_size!=0)
                 for(int j=0; j<=lvars_size; j++){
@@ -263,15 +266,15 @@ search_lower_layer:
                         for(int k=0; k<vars_size; k++){
                                 
                                 variable* curvar = layers[i]->lvars[j]->vars[k];
-                                cout<<curvar->var_name<<endl; //么进来
+                                // cout<<curvar->var_name<<endl; //么进来
                               if(curvar->var_name == $1->var_name){
-                                      cout<<"get it!"<<endl;
+                                //       cout<<"get it!"<<endl;
                                       ValueType temptype = $3->type->type;
                                 //       if($3->type->type == VALUE_STRING)
                                 //       cout<<"ok"<<endl;
                                       // 检查赋值语句的合法性
                                       if(curvar->type->type == temptype){
-                                                cout<<"get it!"<<endl;
+                                                // cout<<"get it!"<<endl;
                                                 if(temptype == VALUE_INT){
                                                         curvar->int_val = $3->int_val;
                                                 }
@@ -502,12 +505,25 @@ expr
 |   expr SELFADD{
         TreeNode*node = new TreeNode($1->lineno,NODE_EXPR);
         node->optype = OP_SELFADD;
+        // switch($1->type->type){
+        //         case VALUE_STRING:
+        //         cout<<"++ can't be used behind std string"<<endl;
+        //         break;
+        //         case VALUE_INT:
+        //         $1->int_val = $1->int_val+1;
+        //         break;
+        //         //有待完善
+        //         default:
+        //         break;
+        // }
         node->addChild($1);
+        $$ = node;
 }
 |   expr SELFMIN{
         TreeNode*node = new TreeNode($1->lineno,NODE_EXPR);
         node->optype = OP_SELFMIN;
-        node->addChild($2);        
+        node->addChild($2);
+        $$ = node;   
 }
 ;
 
